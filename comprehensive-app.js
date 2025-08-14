@@ -550,87 +550,422 @@ class ComprehensiveClaimSystem {
         
         let html = '';
         
-        Object.entries(this.caseData.heads_of_claim).forEach(([key, claim]) => {
-            const successClass = claim.success_probability >= 70 ? 'high-success' : 
-                               claim.success_probability >= 50 ? 'medium-success' : 'low-success';
-            
-            html += `
-                <div class="narrative-card ${successClass}">
-                    <div class="narrative-header">
-                        <h4>${claim.title}</h4>
-                        <div class="claim-metadata">
-                            <span class="claim-ref">${claim.claim_reference}</span>
-                            <span class="parent-folder">📁 ${claim.parent_folder}${claim.subfolder ? ' → ' + claim.subfolder : ''}</span>
-                        </div>
-                        <div class="success-metrics">
-                            <span class="success-rate">Success: ${claim.success_probability}%</span>
-                            <span class="evidence-strength">Evidence: ${claim.evidence_strength}%</span>
-                            <span class="value-estimate">Value: £${(claim.quantum_breakdown.total_claim_value/1000000).toFixed(1)}M</span>
-                        </div>
-                    </div>
-                    
-                    <div class="narrative-content">
-                        <div class="narrative-text">
-                            <h5>Description</h5>
-                            <p>${claim.description}</p>
-                        </div>
-                        
-                        ${claim.technical_issues ? `
-                        <div class="technical-issues">
-                            <h5>Technical Issues</h5>
-                            <ul>
-                                ${claim.technical_issues.slice(0, 3).map(issue => `<li>${issue}</li>`).join('')}
-                                ${claim.technical_issues.length > 3 ? `<li><em>...and ${claim.technical_issues.length - 3} more issues</em></li>` : ''}
-                            </ul>
-                        </div>
-                        ` : ''}
-                        
-                        ${claim.key_risks ? `
-                        <div class="risk-factors">
-                            <h5>Key Risks</h5>
-                            <ul>
-                                ${claim.key_risks.slice(0, 2).map(risk => `<li>${risk}</li>`).join('')}
-                                ${claim.key_risks.length > 2 ? `<li><em>...and ${claim.key_risks.length - 2} more risks</em></li>` : ''}
-                            </ul>
-                        </div>
-                        ` : ''}
-                        
-                        ${claim.regulatory_impact ? `
-                        <div class="regulatory-impact">
-                            <h5>Regulatory Impact</h5>
-                            <span class="impact-level">${claim.regulatory_impact}</span>
-                        </div>
-                        ` : ''}
-                        
-                        ${claim.detailed_timeline ? `
-                        <div class="claim-timeline-preview">
-                            <h5>Key Timeline Events</h5>
-                            <div class="timeline-events-preview">
-                                ${claim.detailed_timeline.slice(0, 2).map(event => `
-                                    <div class="timeline-event-small">
-                                        <span class="event-date">${event.date}</span>
-                                        <span class="event-title">${event.event}</span>
-                                    </div>
-                                `).join('')}
-                                ${claim.detailed_timeline.length > 2 ? `<div class="timeline-more">...${claim.detailed_timeline.length - 2} more events</div>` : ''}
-                            </div>
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    <div class="narrative-actions">
-                        <button class="btn-primary" onclick="window.app.showClaimDetails('${key}')">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                        <button class="btn-secondary" onclick="window.app.showRelatedDocuments('${key}')">
-                            <i class="fas fa-folder-open"></i> Related Documents
-                        </button>
-                    </div>
-                </div>
-            `;
+        // Handle new parent/sub-claim structure
+        Object.entries(this.caseData.heads_of_claim).forEach(([key, folderOrClaim]) => {
+            if (folderOrClaim.folder_type === 'parent') {
+                // Render parent folder
+                html += this.renderParentFolder(key, folderOrClaim);
+            } else {
+                // Handle legacy individual claims (if any)
+                html += this.renderLegacyClaim(key, folderOrClaim);
+            }
         });
         
+        // Add totals summary
+        if (this.caseData.heads_of_claim.TOTALS) {
+            html += this.renderTotalsSummary(this.caseData.heads_of_claim.TOTALS);
+        }
+        
         container.innerHTML = html;
+    }
+    
+    renderParentFolder(key, parentFolder) {
+        const successClass = parentFolder.success_probability >= 70 ? 'high-success' : 
+                           parentFolder.success_probability >= 50 ? 'medium-success' : 'low-success';
+        
+        let html = `
+            <div class="parent-folder-card ${successClass}">
+                <div class="parent-folder-header">
+                    <h3>${parentFolder.title}</h3>
+                    <div class="parent-folder-metrics">
+                        <span class="success-rate">Success: ${parentFolder.success_probability}%</span>
+                        <span class="evidence-strength">Evidence: ${parentFolder.evidence_strength}%</span>
+                        <span class="value-estimate">Total: £${(parentFolder.total_claim_value/1000000).toFixed(1)}M</span>
+                        <span class="sub-claims-count">${Object.keys(parentFolder.sub_claims).length} Sub-Claims</span>
+                    </div>
+                </div>
+                
+                <div class="parent-folder-content">
+                    <div class="parent-description">
+                        <p>${parentFolder.description}</p>
+                    </div>
+                    
+                    <div class="all-documents-section">
+                        <h5><i class="fas fa-folder-open"></i> All Documents (${parentFolder.all_documents.length})</h5>
+                        <div class="documents-grid">
+                            ${parentFolder.all_documents.map(docId => `
+                                <div class="document-item" onclick="window.app.viewDocument('${docId}')">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>${docId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="sub-claims-section">
+                        <h5><i class="fas fa-list"></i> Sub-Claims</h5>
+                        <div class="sub-claims-grid">
+                            ${Object.entries(parentFolder.sub_claims).map(([subKey, subClaim]) => `
+                                <div class="sub-claim-card">
+                                    <div class="sub-claim-header">
+                                        <h6>${subClaim.title}</h6>
+                                        <span class="sub-claim-ref">${subClaim.claim_reference}</span>
+                                        ${subClaim.subfolder ? `<span class="subfolder-tag">${subClaim.subfolder}</span>` : ''}
+                                    </div>
+                                    <div class="sub-claim-content">
+                                        <p>${subClaim.description}</p>
+                                        <div class="sub-claim-metrics">
+                                            <span class="success-rate">Success: ${subClaim.success_probability}%</span>
+                                            <span class="evidence-strength">Evidence: ${subClaim.evidence_strength}%</span>
+                                            <span class="value-estimate">£${(subClaim.quantum_breakdown.total_claim_value/1000000).toFixed(1)}M</span>
+                                        </div>
+                                    </div>
+                                    <div class="sub-claim-actions">
+                                        <button class="btn-small" onclick="window.app.showSubClaimDetails('${key}', '${subKey}')">
+                                            <i class="fas fa-eye"></i> Details
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="parent-folder-actions">
+                    <button class="btn-primary" onclick="window.app.showParentFolderDetails('${key}')">
+                        <i class="fas fa-folder-open"></i> View All Details & Documents
+                    </button>
+                    <button class="btn-secondary" onclick="window.app.exportParentFolderData('${key}')">
+                        <i class="fas fa-download"></i> Export Folder Data
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return html;
+    }
+    
+    renderLegacyClaim(key, claim) {
+        // Legacy individual claim rendering (for backward compatibility)
+        const successClass = claim.success_probability >= 70 ? 'high-success' : 
+                           claim.success_probability >= 50 ? 'medium-success' : 'low-success';
+        
+        return `
+            <div class="narrative-card ${successClass}">
+                <div class="narrative-header">
+                    <h4>${claim.title}</h4>
+                    <div class="claim-metadata">
+                        <span class="claim-ref">${claim.claim_reference}</span>
+                        <span class="parent-folder">📁 ${claim.parent_folder}${claim.subfolder ? ' → ' + claim.subfolder : ''}</span>
+                    </div>
+                    <div class="success-metrics">
+                        <span class="success-rate">Success: ${claim.success_probability}%</span>
+                        <span class="evidence-strength">Evidence: ${claim.evidence_strength}%</span>
+                        <span class="value-estimate">Value: £${(claim.quantum_breakdown.total_claim_value/1000000).toFixed(1)}M</span>
+                    </div>
+                </div>
+                
+                <div class="narrative-content">
+                    <div class="narrative-text">
+                        <h5>Description</h5>
+                        <p>${claim.description}</p>
+                    </div>
+                    
+                    ${claim.technical_issues ? `
+                    <div class="technical-issues">
+                        <h5>Technical Issues</h5>
+                        <ul>
+                            ${claim.technical_issues.slice(0, 3).map(issue => `<li>${issue}</li>`).join('')}
+                            ${claim.technical_issues.length > 3 ? `<li><em>...and ${claim.technical_issues.length - 3} more issues</em></li>` : ''}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${claim.key_risks ? `
+                    <div class="risk-factors">
+                        <h5>Key Risks</h5>
+                        <ul>
+                            ${claim.key_risks.slice(0, 2).map(risk => `<li>${risk}</li>`).join('')}
+                            ${claim.key_risks.length > 2 ? `<li><em>...and ${claim.key_risks.length - 2} more risks</em></li>` : ''}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${claim.regulatory_impact ? `
+                    <div class="regulatory-impact">
+                        <h5>Regulatory Impact</h5>
+                        <span class="impact-level">${claim.regulatory_impact}</span>
+                    </div>
+                    ` : ''}
+                    
+                    ${claim.detailed_timeline ? `
+                    <div class="claim-timeline-preview">
+                        <h5>Key Timeline Events</h5>
+                        <div class="timeline-events-preview">
+                            ${claim.detailed_timeline.slice(0, 2).map(event => `
+                                <div class="timeline-event-small">
+                                    <span class="event-date">${event.date}</span>
+                                    <span class="event-title">${event.event}</span>
+                                </div>
+                            `).join('')}
+                            ${claim.detailed_timeline.length > 2 ? `<div class="timeline-more">...${claim.detailed_timeline.length - 2} more events</div>` : ''}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="narrative-actions">
+                    <button class="btn-primary" onclick="window.app.showClaimDetails('${key}')">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="btn-secondary" onclick="window.app.showRelatedDocuments('${key}')">
+                        <i class="fas fa-folder-open"></i> Related Documents
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    renderTotalsSummary(totals) {
+        return `
+            <div class="totals-summary-card">
+                <div class="totals-header">
+                    <h3><i class="fas fa-chart-line"></i> Case Totals Summary</h3>
+                </div>
+                <div class="totals-content">
+                    <div class="totals-metrics">
+                        <div class="total-metric">
+                            <span class="metric-label">Total Claim Value</span>
+                            <span class="metric-value">£${(totals.total_claim_value/1000000).toFixed(1)}M</span>
+                        </div>
+                        <div class="total-metric">
+                            <span class="metric-label">Total Sub-Claims</span>
+                            <span class="metric-value">${totals.total_sub_claims}</span>
+                        </div>
+                        <div class="total-metric">
+                            <span class="metric-label">Weighted Success Rate</span>
+                            <span class="metric-value">${totals.weighted_success_probability}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    showParentFolderDetails(parentKey) {
+        const parentFolder = this.caseData.heads_of_claim[parentKey];
+        if (!parentFolder) return;
+        
+        this.currentModal = this.createModal(
+            `Parent Folder Details: ${parentFolder.title}`,
+            `
+                <div class="parent-folder-details">
+                    <div class="folder-overview">
+                        <h4>Overview</h4>
+                        <p>${parentFolder.description}</p>
+                        <div class="folder-metrics">
+                            <div class="metric">
+                                <span class="label">Total Claim Value:</span>
+                                <span class="value">£${(parentFolder.total_claim_value/1000000).toFixed(2)}M</span>
+                            </div>
+                            <div class="metric">
+                                <span class="label">Success Probability:</span>
+                                <span class="value">${parentFolder.success_probability}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="label">Evidence Strength:</span>
+                                <span class="value">${parentFolder.evidence_strength}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="all-documents-detailed">
+                        <h4>All Documents (${parentFolder.all_documents.length})</h4>
+                        <div class="documents-list">
+                            ${parentFolder.all_documents.map(docId => `
+                                <div class="document-item-detailed" onclick="window.app.viewDocument('${docId}')">
+                                    <i class="fas fa-file-alt"></i>
+                                    <div class="doc-info">
+                                        <span class="doc-name">${docId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                                        <small class="doc-id">${docId}</small>
+                                    </div>
+                                    <button class="btn-small">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="sub-claims-detailed">
+                        <h4>Sub-Claims (${Object.keys(parentFolder.sub_claims).length})</h4>
+                        <div class="sub-claims-list">
+                            ${Object.entries(parentFolder.sub_claims).map(([subKey, subClaim]) => `
+                                <div class="sub-claim-item-detailed">
+                                    <div class="sub-claim-header-detailed">
+                                        <h5>${subClaim.title}</h5>
+                                        <div class="sub-claim-tags">
+                                            <span class="claim-ref-tag">${subClaim.claim_reference}</span>
+                                            ${subClaim.subfolder ? `<span class="subfolder-tag">${subClaim.subfolder}</span>` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="sub-claim-content-detailed">
+                                        <p>${subClaim.description}</p>
+                                        <div class="quantum-breakdown">
+                                            <h6>Quantum Breakdown:</h6>
+                                            <div class="breakdown-items">
+                                                ${Object.entries(subClaim.quantum_breakdown).filter(([k,v]) => k !== 'total_claim_value').map(([key, value]) => `
+                                                    <div class="breakdown-item">
+                                                        <span class="breakdown-label">${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span>
+                                                        <span class="breakdown-value">£${(value/1000).toFixed(0)}K</span>
+                                                    </div>
+                                                `).join('')}
+                                                <div class="breakdown-total">
+                                                    <span class="breakdown-label">Total:</span>
+                                                    <span class="breakdown-value">£${(subClaim.quantum_breakdown.total_claim_value/1000000).toFixed(2)}M</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sub-claim-actions-detailed">
+                                        <button class="btn-small" onclick="window.app.showSubClaimDetails('${parentKey}', '${subKey}')">
+                                            <i class="fas fa-eye"></i> Details
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `,
+            'large'
+        );
+    }
+    
+    showSubClaimDetails(parentKey, subClaimKey) {
+        const parentFolder = this.caseData.heads_of_claim[parentKey];
+        const subClaim = parentFolder?.sub_claims[subClaimKey];
+        if (!subClaim) return;
+        
+        this.currentModal = this.createModal(
+            `Sub-Claim Details: ${subClaim.title}`,
+            `
+                <div class="sub-claim-details">
+                    <div class="sub-claim-overview">
+                        <div class="claim-header-info">
+                            <h4>${subClaim.title}</h4>
+                            <div class="claim-tags">
+                                <span class="claim-ref-tag">${subClaim.claim_reference}</span>
+                                ${subClaim.subfolder ? `<span class="subfolder-tag">${subClaim.subfolder}</span>` : ''}
+                                <span class="parent-tag">Parent: ${parentFolder.title}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="claim-metrics-detailed">
+                            <div class="metric">
+                                <span class="label">Success Probability:</span>
+                                <span class="value">${subClaim.success_probability}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="label">Evidence Strength:</span>
+                                <span class="value">${subClaim.evidence_strength}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="label">Total Claim Value:</span>
+                                <span class="value">£${(subClaim.quantum_breakdown.total_claim_value/1000000).toFixed(2)}M</span>
+                            </div>
+                            ${subClaim.regulatory_impact ? `
+                            <div class="metric">
+                                <span class="label">Regulatory Impact:</span>
+                                <span class="value impact-level">${subClaim.regulatory_impact}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="claim-description-detailed">
+                        <h5>Description</h5>
+                        <p>${subClaim.description}</p>
+                    </div>
+                    
+                    <div class="quantum-breakdown-detailed">
+                        <h5>Quantum Breakdown</h5>
+                        <div class="breakdown-table">
+                            ${Object.entries(subClaim.quantum_breakdown).map(([key, value]) => `
+                                <div class="breakdown-row ${key === 'total_claim_value' ? 'breakdown-total-row' : ''}">
+                                    <span class="breakdown-label">${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</span>
+                                    <span class="breakdown-value">£${key === 'total_claim_value' ? (value/1000000).toFixed(2) + 'M' : (value/1000).toFixed(0) + 'K'}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    ${subClaim.detailed_timeline ? `
+                    <div class="detailed-timeline">
+                        <h5>Detailed Timeline</h5>
+                        <div class="timeline-events-detailed">
+                            ${subClaim.detailed_timeline.map(event => `
+                                <div class="timeline-event-detailed">
+                                    <div class="event-date-detailed">${event.date}</div>
+                                    <div class="event-content-detailed">
+                                        <h6>${event.event}</h6>
+                                        <p>${event.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    ${subClaim.key_timeline_issues ? `
+                    <div class="key-issues">
+                        <h5>Key Timeline Issues</h5>
+                        <div class="timeline-issues-detailed">
+                            ${subClaim.key_timeline_issues.map(issue => `
+                                <div class="timeline-issue-detailed">
+                                    <div class="issue-date-detailed">${issue.date}</div>
+                                    <div class="issue-content-detailed">
+                                        <h6>${issue.event}</h6>
+                                        <p>${issue.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `,
+            'large'
+        );
+    }
+    
+    exportParentFolderData(parentKey) {
+        const parentFolder = this.caseData.heads_of_claim[parentKey];
+        if (!parentFolder) return;
+        
+        const exportData = {
+            parent_folder: parentFolder.title,
+            description: parentFolder.description,
+            total_claim_value: parentFolder.total_claim_value,
+            success_probability: parentFolder.success_probability,
+            evidence_strength: parentFolder.evidence_strength,
+            all_documents: parentFolder.all_documents,
+            sub_claims: parentFolder.sub_claims,
+            export_timestamp: new Date().toISOString(),
+            export_filename: `${parentKey}_export_${new Date().toISOString().split('T')[0]}.json`
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = exportData.export_filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification(`Exported ${parentFolder.title} data successfully!`, 'success');
     }
     
     renderTimeline() {
