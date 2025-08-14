@@ -1,0 +1,13 @@
+BMS/
+SVP/
+Mechanical Building Services/
+Electrical/
+Life Safety Systems/
+*.eml
+*.zip
+*.pdf
+*.xlsx
+*.docx
+node_modules/
+.DS_Store
+.vercel

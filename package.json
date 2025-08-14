@@ -1,0 +1,25 @@
+{
+  "name": "ljj-svp-claim-mgmt",
+  "version": "1.0.0",
+  "description": "LJJ SVP Claim Management System - Enterprise case management platform for Quantum Commercial Solutions",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "case-management",
+    "legal",
+    "construction",
+    "svp",
+    "claims",
+    "enterprise"
+  ],
+  "author": "Quantum Commercial Solutions",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
