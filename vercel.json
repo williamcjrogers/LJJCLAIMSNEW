@@ -2,6 +2,7 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "framework": null,
+  "devCommand": null,
   "rewrites": [
     {
       "source": "/((?!api).)*",
