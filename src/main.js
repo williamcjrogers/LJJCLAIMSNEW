@@ -8,11 +8,6 @@ import { buildingServicesClaims } from './data/buildingServicesClaims.js';
 import { documentsData } from './data/documentsData.js';
 import { claimsHierarchy } from './data/claimsHierarchy.js';
 
-// Import styles
-import './styles/main.css';
-import './styles/individualTimeline.css';
-import './styles/evidenceViewer.css';
-
 class ClaimManagementApp {
     constructor() {
         this.currentSection = 'dashboard';
