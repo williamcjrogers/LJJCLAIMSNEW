@@ -1920,7 +1920,5 @@ class ComprehensiveClaimSystem {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ComprehensiveClaimSystem();
-});
+// Make class available globally for initialization from HTML
+window.ComprehensiveClaimSystem = ComprehensiveClaimSystem;

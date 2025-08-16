@@ -792,7 +792,21 @@ Examples:
         </main>
     </div>
 
+    <!-- Load data first, then main app -->
     <script src="./building-services-claims.js"></script>
     <script src="./comprehensive-app.js"></script>
+    
+    <!-- Initialize the application -->
+    <script>
+        // Initialize the comprehensive claim system when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ComprehensiveClaimSystem !== 'undefined') {
+                window.app = new ComprehensiveClaimSystem();
+                console.log('LJJ SVP Claim Management System initialized successfully');
+            } else {
+                console.error('ComprehensiveClaimSystem class not found. Check script loading.');
+            }
+        });
+    </script>
 </body>
 </html>
