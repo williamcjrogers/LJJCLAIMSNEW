@@ -6,17 +6,30 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/(?!src|favicon|robots|sitemap).*",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/src/(.*)",
+      "source": "/src/**/*.js",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/javascript"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/src/**/*.css",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css"
         }
       ]
     },
