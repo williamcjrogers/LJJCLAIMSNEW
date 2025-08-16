@@ -2,8 +2,7 @@
   "name": "ljj-svp-claim-mgmt",
   "version": "2.0.0",
   "description": "LJJ SVP Claim Management System - Modular enterprise case management platform for Quantum Commercial Solutions",
-  "type": "module",
-  "main": "public/index.html",
+  "main": "index.html",
   "scripts": {
     "dev": "vercel dev --listen 3000",
     "build": "echo 'ES6 modules - no build needed'",

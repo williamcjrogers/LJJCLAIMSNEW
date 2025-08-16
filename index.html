@@ -793,6 +793,10 @@ Examples:
     </div>
 
     <!-- Load data first, then main app -->
+    <script>
+        // Global variable to ensure data is available
+        window.buildingServicesClaims = null;
+    </script>
     <script src="./building-services-claims.js"></script>
     <script src="./comprehensive-app.js"></script>
     
