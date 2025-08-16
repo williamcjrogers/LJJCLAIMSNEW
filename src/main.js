@@ -3,10 +3,13 @@ import { Sidebar } from './components/Sidebar.js';
 import { Dashboard } from './modules/Dashboard.js';
 import { MasterDashboard } from './modules/MasterDashboard.js';
 import { HeadOfClaimView } from './modules/HeadOfClaimView.js';
+import { EnhancedEvidenceViewer } from './modules/EnhancedEvidenceViewer.js';
 import { caseData } from './data/caseData.js';
 import { buildingServicesClaims } from './data/buildingServicesClaims.js';
 import { documentsData } from './data/documentsData.js';
 import { claimsHierarchy } from './data/claimsHierarchy.js';
+import { comprehensiveEvidenceRegistry } from './data/comprehensiveEvidenceRegistry.js';
+import { ljjClaimsDetail } from './data/ljjClaimsDetail.js';
 
 class ClaimManagementApp {
     constructor() {
