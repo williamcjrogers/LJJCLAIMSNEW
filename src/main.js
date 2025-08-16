@@ -32,10 +32,19 @@ class ClaimManagementApp {
     
     async init() {
         try {
+            console.log('Initializing LJJ SVP Claim Management System...');
+            
             await this.loadStyles();
+            console.log('Styles loaded successfully');
+            
             this.initializeComponents();
+            console.log('Components initialized');
+            
             this.initializeModules();
+            console.log('Modules initialized');
+            
             this.bindGlobalEvents();
+            console.log('Events bound');
             
             // Update breadcrumb
             this.updateBreadcrumb('Dashboard');
@@ -43,14 +52,15 @@ class ClaimManagementApp {
             console.log('LJJ SVP Claim Management System initialized successfully');
         } catch (error) {
             console.error('Failed to initialize application:', error);
+            this.showError('Application failed to initialize. Please check console for details.');
         }
     }
     
     async loadStyles() {
         const stylesheets = [
-            '/src/styles/base/variables.css',
-            '/src/styles/base/reset.css',
-            '/src/styles/components/sidebar.css'
+            './src/styles/base/variables.css',
+            './src/styles/base/reset.css',
+            './src/styles/components/sidebar.css'
         ];
         
         const loadPromises = stylesheets.map(href => {
@@ -58,8 +68,14 @@ class ClaimManagementApp {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
                 link.href = href;
-                link.onload = resolve;
-                link.onerror = reject;
+                link.onload = () => {
+                    console.log(`Loaded stylesheet: ${href}`);
+                    resolve();
+                };
+                link.onerror = (error) => {
+                    console.error(`Failed to load stylesheet: ${href}`, error);
+                    reject(error);
+                };
                 document.head.appendChild(link);
             });
         });

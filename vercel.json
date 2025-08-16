@@ -1,22 +1,43 @@
 {
-  "buildCommand": "echo 'ES6 modules - no build needed'",
-  "outputDirectory": "public",
+  "buildCommand": "echo 'No build needed for static site'",
+  "outputDirectory": ".",
   "installCommand": "echo 'No dependencies to install'",
   "public": true,
   "framework": null,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/(?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|pdf|txt|json)).*",
       "destination": "/index.html"
     }
   ],
   "headers": [
     {
-      "source": "/src/(.*)",
+      "source": "/**/*.js",
       "headers": [
         {
           "key": "Content-Type",
           "value": "application/javascript"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/**/*.css",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000"
         }
       ]
     },
@@ -37,7 +58,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }
