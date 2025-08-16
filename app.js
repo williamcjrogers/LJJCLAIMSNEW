@@ -516,6 +516,40 @@ mark {
 }
 `;
 
+// Initialize charts
+function initCharts() {
+    // Evidence distribution chart
+    const evidenceCtx = document.getElementById('evidence-chart');
+    if (evidenceCtx) {
+        new Chart(evidenceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Technical Reports', 'Correspondence', 'Legal Documents', 'Drawings'],
+                datasets: [{
+                    data: [3, 4, 1, 1],
+                    backgroundColor: ['#3498db', '#e74c3c', '#f39c12', '#2ecc71']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+}
+
+// Initialize sidebar functionality
+function initSidebar() {
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+        });
+    }
+}
+
 // Inject additional CSS
 const style = document.createElement('style');
 style.textContent = additionalCSS;
