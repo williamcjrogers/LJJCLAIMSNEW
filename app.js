@@ -132,23 +132,34 @@ document.addEventListener('DOMContentLoaded', function() {
     renderDocuments();
     initSearch();
     initEvidenceMap();
+    initCharts();
+    initSidebar();
 });
 
 // Navigation functionality
 function initNavigation() {
-    navButtons.forEach(button => {
-        button.addEventListener('click', function() {
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
             const targetSection = this.dataset.section;
             
-            // Update active nav button
-            navButtons.forEach(btn => btn.classList.remove('active'));
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
             this.classList.add('active');
             
             // Show target section
             contentSections.forEach(section => {
                 section.classList.remove('active');
             });
-            document.getElementById(targetSection).classList.add('active');
+            
+            const targetElement = document.getElementById(targetSection);
+            if (targetElement) {
+                targetElement.classList.add('active');
+            }
+            
+            // Update breadcrumb
+            if (currentSectionSpan) {
+                currentSectionSpan.textContent = this.querySelector('span').textContent;
+            }
         });
     });
 }
