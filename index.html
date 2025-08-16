@@ -804,11 +804,24 @@ Examples:
     <script>
         // Initialize the comprehensive claim system when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof ComprehensiveClaimSystem !== 'undefined') {
-                window.app = new ComprehensiveClaimSystem();
-                console.log('LJJ SVP Claim Management System initialized successfully');
-            } else {
-                console.error('ComprehensiveClaimSystem class not found. Check script loading.');
+            console.log('DOM loaded, starting initialization...');
+            try {
+                if (typeof ComprehensiveClaimSystem !== 'undefined') {
+                    console.log('ComprehensiveClaimSystem found, creating instance...');
+                    window.app = new ComprehensiveClaimSystem();
+                    console.log('LJJ SVP Claim Management System initialized successfully');
+                    
+                    // Hide loading screen
+                    const loadingScreen = document.querySelector('.loading-screen');
+                    if (loadingScreen) {
+                        loadingScreen.style.display = 'none';
+                    }
+                } else {
+                    console.error('ComprehensiveClaimSystem class not found. Check script loading.');
+                }
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                console.error('Stack trace:', error.stack);
             }
         });
     </script>

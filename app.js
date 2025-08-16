@@ -127,13 +127,26 @@ const currentSectionSpan = document.getElementById('current-section');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    initNavigation();
-    renderTimeline();
-    renderDocuments();
-    initSearch();
-    initEvidenceMap();
-    initCharts();
-    initSidebar();
+    console.log('Starting app initialization...');
+    try {
+        initNavigation();
+        console.log('Navigation initialized');
+        renderTimeline();
+        console.log('Timeline rendered');
+        renderDocuments();
+        console.log('Documents rendered');
+        initSearch();
+        console.log('Search initialized');
+        initEvidenceMap();
+        console.log('Evidence map initialized');
+        initCharts();
+        console.log('Charts initialized');
+        initSidebar();
+        console.log('Sidebar initialized');
+        console.log('App initialization complete!');
+    } catch (error) {
+        console.error('Error during initialization:', error);
+    }
 });
 
 // Navigation functionality
@@ -392,6 +405,71 @@ function showDocumentDetails(docId) {
     alert(`Document: ${doc.title}\n\nPath: ${doc.path}\n\nPreview: ${doc.preview}\n\nKey Points:\n${doc.keyPoints.join('\n')}`);
 }
 
+// Initialize charts
+function initCharts() {
+    try {
+        // Evidence distribution chart
+        const evidenceCtx = document.getElementById('evidence-chart');
+        if (evidenceCtx && typeof Chart !== 'undefined') {
+            const ctx = evidenceCtx.getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Blocks', 'Issues', 'Personnel', 'Locations'],
+                    datasets: [{
+                        data: [
+                            caseData.evidence.blocks.length,
+                            caseData.evidence.issues.length,
+                            caseData.evidence.personnel.length,
+                            caseData.evidence.locations.length
+                        ],
+                        backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            console.log('Evidence chart created');
+        } else if (evidenceCtx) {
+            console.log('Chart.js not loaded yet, skipping chart initialization');
+        }
+        
+        // Cost analysis chart
+        const costCtx = document.getElementById('cost-chart');
+        if (costCtx) {
+            console.log('Cost chart placeholder ready');
+        }
+    } catch (error) {
+        console.error('Error initializing charts:', error);
+    }
+}
+
+// Initialize sidebar functionality
+function initSidebar() {
+    try {
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+            });
+            console.log('Sidebar toggle initialized');
+        } else {
+            console.log('Sidebar toggle or sidebar not found');
+        }
+    } catch (error) {
+        console.error('Error initializing sidebar:', error);
+    }
+}
+
 // Add CSS for additional styling
 const additionalCSS = `
 .search-results-list {
@@ -515,40 +593,6 @@ mark {
     border: 1px solid #dee2e6;
 }
 `;
-
-// Initialize charts
-function initCharts() {
-    // Evidence distribution chart
-    const evidenceCtx = document.getElementById('evidence-chart');
-    if (evidenceCtx) {
-        new Chart(evidenceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Technical Reports', 'Correspondence', 'Legal Documents', 'Drawings'],
-                datasets: [{
-                    data: [3, 4, 1, 1],
-                    backgroundColor: ['#3498db', '#e74c3c', '#f39c12', '#2ecc71']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-}
-
-// Initialize sidebar functionality
-function initSidebar() {
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    const sidebar = document.querySelector('.sidebar');
-    
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-        });
-    }
-}
 
 // Inject additional CSS
 const style = document.createElement('style');

@@ -1,220 +1,348 @@
 // Hierarchical Claims Structure
-// Updated with real LJJ data from "LJJ Deductions Breakdown 15.08.25.csv"
-
-import { ljjClaimsData } from './ljjClaimsData.js';
+// Based on LJJ Deductions Breakdown 15.08.25.csv
 
 export const claimsHierarchy = {
     master: {
         case_id: 'WEL-2024-001',
         case_name: 'United Living (South) Limited v LJJ Limited - LJJ Deductions',
-        total_claim_value: 4990000, // Calculated from LJJ data: SVP(1.67M) + BMS(0.95M) + MBS(0.85M) + ELE(0.42M) + LSS(0.38M) + Design(0.25M) + OH&P(0.2M) + Snagging(0.15M) + M&E(0.12M)
-        estimated_recovery: { min: 2495000, max: 3742500, percentage: '50-75%' },
-        contract_value: 4990000,
+        total_claim_value: 2400000,
+        estimated_recovery: { min: 1200000, max: 1800000, percentage: '50-75%' },
+        contract_value: 2400000,
         status: 'active',
-        overall_strength: 75 // Average across all heads
+        overall_strength: 75 // Will be calculated based on evidence
     },
     
-    heads_of_claim: {
-        // Real LJJ data imported from CSV
-        ...ljjClaimsData.heads_of_claim,
-        
-        // Legacy example structure (now commented out):
-        /*
-        svp_systems: {
-            id: 'hoc-001',
-            title: 'SVP (Soil Vent Pipe) Systems',
-            description: 'Comprehensive SVP system failures across all blocks',
-            claim_value: 1670000,
-            success_probability: 75,
-            evidence_strength: 92,
-            status: 'active',
-            
-            // Individual timeline for this head of claim
-            timeline: [
-                {
-                    date: '2021-03-23',
-                    event: 'SVP Benchmark for Inspection',
-                    description: 'Initial benchmarking requirements established',
-                    category: 'contractual',
-                    impact: 'low'
-                },
-                {
-                    date: '2021-08-02',
-                    event: 'First LJJ Damage Reports',
-                    description: 'LJJ begins reporting SVP damage - defensive position',
-                    category: 'critical',
-                    impact: 'high_negative'
-                },
-                {
-                    date: '2024-01-07',
-                    event: 'K&T Block C Investigation',
-                    description: '28 technical issues identified',
-                    category: 'evidence',
-                    impact: 'high_positive'
-                }
-            ],
-            
-            // Sub-claims/defects within this head
-            sub_claims: {
-                technical_failures: {
-                    id: 'svp-001',
-                    title: 'Technical Installation Failures',
-                    description: '28 systematic installation failures identified by K&T investigation',
-                    claim_value: 890000,
-                    status: 'strong',
-                    evidence_items: [
-                        'K&T Block C Report',
-                        'Installation photographs',
-                        'Technical drawings'
-                    ],
-                    defects: [
-                        'Leaking boss connections',
-                        'Missing gasket seals',
-                        'Unglued fittings',
-                        'Poor workmanship'
-                    ]
-                },
-                testing_commissioning: {
-                    id: 'svp-002',
-                    title: 'Testing & Commissioning Failures',
-                    description: 'Failed witnessing and incomplete test certificates',
-                    claim_value: 320000,
-                    status: 'medium',
-                    evidence_items: [
-                        'Incomplete test certificates',
-                        'Witness request emails',
-                        'Testing schedule correspondence'
-                    ],
-                    defects: [
-                        'Failed witnessing attempts',
-                        'Incomplete documentation',
-                        'Non-compliance with procedures'
-                    ]
-                },
-                compliance_issues: {
-                    id: 'svp-003',
-                    title: 'Building Regulations Compliance',
-                    description: 'Non-compliance with Part H regulations and Building Control requirements',
-                    claim_value: 460000,
-                    status: 'strong',
-                    evidence_items: [
-                        'Building Control correspondence',
-                        'Part H compliance documentation',
-                        'NCR reports'
-                    ],
-                    defects: [
-                        'Part H non-compliance',
-                        'Building Control failures',
-                        'Regulatory breaches'
-                    ]
-                }
-            }
-        },
-        
-        bms_systems: {
-            id: 'hoc-002',
-            title: 'BMS (Building Management Systems)',
-            description: 'Systematic BMS integration and commissioning failures',
-            claim_value: 730000,
-            success_probability: 72,
-            evidence_strength: 85,
-            status: 'active',
-            
-            timeline: [
-                {
-                    date: '2023-08-12',
-                    event: 'LST Missed BMS Integration',
-                    description: 'LST missed BMS integration with CPGS systems',
-                    category: 'critical',
-                    impact: 'high_positive'
-                },
-                {
-                    date: '2023-10-04',
-                    event: 'NCR BMS Non-compliance',
-                    description: 'Formal non-compliance report issued',
-                    category: 'formal',
-                    impact: 'high_positive'
-                },
-                {
-                    date: '2024-04-19',
-                    event: 'K&T BMS Completion Report',
-                    description: 'Final technical assessment completed',
-                    category: 'evidence',
-                    impact: 'high_positive'
-                }
-            ],
-            
-            sub_claims: {
-                integration_failures: {
-                    id: 'bms-001',
-                    title: 'System Integration Failures',
-                    description: 'Failed integration between BMS and CPGS systems',
-                    claim_value: 400000,
-                    status: 'strong',
-                    evidence_items: [
-                        'Integration test results',
-                        'System architecture documents',
-                        'LST correspondence'
-                    ],
-                    defects: [
-                        'CPGS integration failure',
-                        'Control system incompatibility',
-                        'Software configuration errors'
-                    ]
-                },
-                commissioning_defects: {
-                    id: 'bms-002',
-                    title: 'Commissioning Defects',
-                    description: 'Multiple commissioning failures and NCR reports',
-                    claim_value: 330000,
-                    status: 'medium',
-                    evidence_items: [
-                        'Commissioning reports',
-                        'NCR documentation',
-                        'Test certificates'
-                    ],
-                    defects: [
-                        'Failed commissioning tests',
-                        'Incomplete documentation',
-                        'Performance failures'
-                    ]
-                }
-            }
-        }
-        */
-    },
-    
-    // Cross-cutting concerns
-    shared_timeline: [
-        // Master timeline events that affect multiple heads of claim
+    // Master project timeline - affects multiple heads
+    masterTimeline: [
         {
-            date: '2023-11-10',
-            event: 'Contract Termination Notice',
-            description: 'UL terminates remaining works from LJJ contract',
-            category: 'termination',
-            affected_claims: ['svp_systems', 'bms_systems'],
-            impact: 'high_positive'
+            id: 'mt1',
+            date: '2023-01-15',
+            title: 'Project Initiation',
+            description: 'Initial project scope and requirements defined',
+            affectedHeads: ['hoc1', 'hoc2', 'hoc3', 'hoc4', 'hoc5', 'hoc6', 'hoc7', 'hoc8']
         },
         {
-            date: '2024-02-16',
-            event: 'Building Control Final Approval',
-            description: 'BC sign-off following remediation works',
-            category: 'resolution',
-            affected_claims: ['svp_systems', 'bms_systems'],
-            impact: 'high_positive'
+            id: 'mt2',
+            date: '2023-03-01',
+            title: 'Design Changes Approved',
+            description: 'Major design modifications approved affecting multiple systems',
+            affectedHeads: ['hoc2', 'hoc3', 'hoc4', 'hoc6']
+        },
+        {
+            id: 'mt3',
+            date: '2023-06-15',
+            title: 'Supply Chain Disruption',
+            description: 'Critical materials shortage affecting project timeline',
+            affectedHeads: ['hoc1', 'hoc3', 'hoc4', 'hoc5']
+        },
+        {
+            id: 'mt4',
+            date: '2023-09-01',
+            title: 'Regulatory Compliance Review',
+            description: 'Full compliance audit and adjustments',
+            affectedHeads: ['hoc1', 'hoc2', 'hoc3', 'hoc4', 'hoc5', 'hoc7']
+        },
+        {
+            id: 'mt5',
+            date: '2023-12-15',
+            title: 'Project Completion Target',
+            description: 'Original completion date - extensions required',
+            affectedHeads: ['hoc1', 'hoc2', 'hoc3', 'hoc4', 'hoc5', 'hoc6', 'hoc7', 'hoc8']
         }
     ],
     
-    // Summary calculations
-    summary: {
-        total_heads_of_claim: 0, // Will be calculated
-        total_sub_claims: 0,     // Will be calculated
-        total_claim_value: 0,    // Will be calculated
-        average_strength: 0,     // Will be calculated
-        strongest_claim: null,   // Will be determined
-        weakest_claim: null      // Will be determined
+    headsOfClaim: [
+        {
+            id: 'hoc1',
+            name: 'Soil Vent Pipes',
+            folderRef: '1',
+            totalClaim: 45000,
+            evidenceStrength: 82,
+            successProbability: 75,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc1-1',
+                    name: 'Soil Vent Pipes',
+                    defectNumber: 1,
+                    claimAmount: 45000,
+                    evidenceStrength: 82,
+                    successProbability: 75,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e1-1-1', title: 'Soil Vent Pipes Installation Records', type: 'document' },
+                        { id: 'e1-1-2', title: 'System Test Reports', type: 'test-report' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc2',
+            name: 'Building Management System',
+            folderRef: '2',
+            totalClaim: 67000,
+            evidenceStrength: 88,
+            successProbability: 82,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc2-1',
+                    name: 'BMS',
+                    defectNumber: 1,
+                    claimAmount: 67000,
+                    evidenceStrength: 88,
+                    successProbability: 82,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e2-1-1', title: 'BMS Commissioning Report', type: 'report' },
+                        { id: 'e2-1-2', title: 'Integration Test Results', type: 'test-report' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc3',
+            name: 'Mechanical Building Services',
+            folderRef: '3',
+            totalClaim: 38000,
+            evidenceStrength: 78,
+            successProbability: 72,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc3-1',
+                    name: 'Chlorination',
+                    defectNumber: 1,
+                    claimAmount: 38000,
+                    evidenceStrength: 78,
+                    successProbability: 72,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e3-1-1', title: 'Chlorination System Design', type: 'drawing' },
+                        { id: 'e3-1-2', title: 'Water Quality Test Results', type: 'test-report' }
+                    ]
+                },
+                {
+                    id: 'sc3-2',
+                    name: 'Duplex 9',
+                    defectNumber: 2,
+                    claimAmount: 45000,
+                    evidenceStrength: 82,
+                    successProbability: 75,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e3-2-1', title: 'Duplex 9 Installation Records', type: 'document' },
+                        { id: 'e3-2-2', title: 'System Test Reports', type: 'test-report' }
+                    ]
+                },
+                {
+                    id: 'sc3-3',
+                    name: 'HIU',
+                    defectNumber: 3,
+                    claimAmount: 38000,
+                    evidenceStrength: 78,
+                    successProbability: 72,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e3-3-1', title: 'HIU Performance Data', type: 'report' },
+                        { id: 'e3-3-2', title: 'Installation Certificates', type: 'certificate' }
+                    ]
+                },
+                {
+                    id: 'sc3-4',
+                    name: 'MVHR',
+                    defectNumber: 4,
+                    claimAmount: 42000,
+                    evidenceStrength: 80,
+                    successProbability: 73,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e3-4-1', title: 'MVHR Commissioning Report', type: 'report' },
+                        { id: 'e3-4-2', title: 'Ventilation Test Results', type: 'test-report' }
+                    ]
+                },
+                {
+                    id: 'sc3-5',
+                    name: 'UFH',
+                    defectNumber: 5,
+                    claimAmount: 28000,
+                    evidenceStrength: 77,
+                    successProbability: 70,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e3-5-1', title: 'UFH Layout Drawings', type: 'drawing' },
+                        { id: 'e3-5-2', title: 'Thermal Performance Data', type: 'data' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc4',
+            name: 'Electrical',
+            folderRef: '4',
+            totalClaim: 142000,
+            evidenceStrength: 85,
+            successProbability: 78,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc4-1',
+                    name: 'Lightning Protection',
+                    defectNumber: 1,
+                    claimAmount: 48000,
+                    evidenceStrength: 87,
+                    successProbability: 80,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e4-1-1', title: 'Lightning Protection System Design', type: 'drawing' },
+                        { id: 'e4-1-2', title: 'Installation Certificates', type: 'certificate' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc5',
+            name: 'Life Safety Systems',
+            folderRef: '5',
+            totalClaim: 29000,
+            evidenceStrength: 88,
+            successProbability: 82,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc5-1',
+                    name: 'Fire Alarm System',
+                    defectNumber: 1,
+                    claimAmount: 29000,
+                    evidenceStrength: 88,
+                    successProbability: 82,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e5-1-1', title: 'Fire Alarm System Design', type: 'drawing' },
+                        { id: 'e5-1-2', title: 'Commissioning Report', type: 'report' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc6',
+            name: 'Design & OH&P',
+            folderRef: '6',
+            totalClaim: 18000,
+            evidenceStrength: 68,
+            successProbability: 65,
+            status: 'active',
+            subClaims: [
+                {
+                    id: 'sc6-1',
+                    name: 'Design Pro-Rata',
+                    defectNumber: 1,
+                    claimAmount: 10000,
+                    evidenceStrength: 68,
+                    successProbability: 65,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e6-1-1', title: 'Design Drawings', type: 'drawing' },
+                        { id: 'e6-1-2', title: 'Design Calculations', type: 'data' }
+                    ]
+                },
+                {
+                    id: 'sc6-2',
+                    name: 'OH&P Pro-Rata',
+                    defectNumber: 2,
+                    claimAmount: 8000,
+                    evidenceStrength: 68,
+                    successProbability: 65,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e6-2-1', title: 'Contract Overhead', type: 'document' },
+                        { id: 'e6-2-2', title: 'Lost Profit Calculation', type: 'data' }
+                    ]
+                }
+            ]
+        },
+        {
+            id: 'hoc7',
+            name: 'Snagging - Kilmurray',
+            folderRef: '7',
+            totalClaim: 12000,
+            evidenceStrength: 95,
+            successProbability: 90,
+            success_probability: 90,
+            success_reasoning: 'Kilmurray reports provide independent third-party evidence. Snagging items clearly documented with photographic evidence.',
+            evidence_strength: 95,
+            status: 'active',
+            
+            timeline: [],
+            
+            defects: {
+                snagging_main: {
+                    id: 'snag-001',
+                    title: 'Snagging',
+                    description: 'Outstanding defects list',
+                    value: 120000,
+                    timeline: [],
+                    evidence: [],
+                    issues: ['Outstanding defects', 'Incomplete works']
+                }
+            }
+        },
+        
+        // 8. M&E Monitoring
+        me_monitoring: {
+            id: 'hoc-008',
+            folder_ref: '8',
+            title: 'M&E Monitoring',
+            description: 'Quinn Ross M&E monitoring and witnessing failures',
+            claim_value: 100000,
+            success_probability: 70,
+            success_reasoning: 'Quinn Ross documentation provides evidence of monitoring failures. Witnessing requests ignored or failed.',
+            evidence_strength: 75,
+            status: 'active',
+            
+            timeline: [],
+            
+            defects: {
+                quinn_ross: {
+                    id: 'me-001',
+                    title: 'Quinn Ross',
+                    description: 'M&E monitoring failures',
+                    value: 100000,
+                    timeline: [],
+                    evidence: [],
+                    issues: ['Witnessing failures', 'Documentation gaps']
+                }
+            }
+        }
     }
 };
+
+// Calculate summary statistics
+function calculateSummary() {
+    const heads = Object.values(claimsHierarchy.heads_of_claim);
+    let totalValue = 0;
+    let totalStrength = 0;
+    let totalSubClaims = 0;
+    
+    heads.forEach(head => {
+        totalValue += head.claim_value;
+        totalStrength += head.success_probability;
+        if (head.defects) {
+            totalSubClaims += Object.keys(head.defects).length;
+        }
+    });
+    
+    claimsHierarchy.summary = {
+        total_heads_of_claim: heads.length,
+        total_sub_claims: totalSubClaims,
+        total_claim_value: totalValue,
+        average_strength: Math.round(totalStrength / heads.length),
+        strongest_claim: heads.reduce((a, b) => a.success_probability > b.success_probability ? a : b),
+        weakest_claim: heads.reduce((a, b) => a.success_probability < b.success_probability ? a : b)
+    };
+}
+
+calculateSummary();
 
 // Utility functions for the hierarchy
 export const ClaimsHierarchyUtils = {
@@ -226,7 +354,7 @@ export const ClaimsHierarchyUtils = {
         
         summary.total_heads_of_claim = heads.length;
         summary.total_sub_claims = heads.reduce((total, head) => 
-            total + Object.keys(head.sub_claims || {}).length, 0);
+            total + Object.keys(head.defects || {}).length, 0);
         summary.total_claim_value = heads.reduce((total, head) => 
             total + (head.claim_value || 0), 0);
         summary.average_strength = heads.reduce((total, head) => 
@@ -249,7 +377,7 @@ export const ClaimsHierarchyUtils = {
     // Get sub-claim by head ID and sub-claim ID
     getSubClaim(headId, subClaimId) {
         const head = this.getHeadOfClaim(headId);
-        return head?.sub_claims?.[subClaimId] || null;
+        return head?.defects?.[subClaimId] || null;
     },
     
     // Get timeline for specific head of claim
