@@ -1,6 +1,6 @@
 {
-  "buildCommand": "echo 'No build needed for static site'",
-  "outputDirectory": ".",
+  "buildCommand": "echo 'ES6 modules - no build needed'",
+  "outputDirectory": "public",
   "installCommand": "echo 'No dependencies to install'",
   "public": true,
   "framework": null,
@@ -11,6 +11,15 @@
     }
   ],
   "headers": [
+    {
+      "source": "/src/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
@@ -28,7 +37,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "public, max-age=3600"
         }
       ]
     }
