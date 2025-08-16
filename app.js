@@ -302,25 +302,8 @@ function performGlobalSearch() {
 
 // Display search results
 function displaySearchResults(results, searchTerm) {
-    if (results.length === 0) {
-        searchResults.innerHTML = `<p>No results found for "${searchTerm}"</p>`;
-        return;
-    }
-    
-    const resultsHTML = `
-        <h4>Found ${results.length} results for "${searchTerm}":</h4>
-        <div class="search-results-list">
-            ${results.map(result => `
-                <div class="search-result-item ${getCategoryClass(result.category)}">
-                    <div class="result-type">${result.type.toUpperCase()}</div>
-                    <div class="result-title">${highlightSearchTerm(result.title, searchTerm)}</div>
-                    <div class="result-preview">${highlightSearchTerm(result.preview, searchTerm)}</div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    
-    searchResults.innerHTML = resultsHTML;
+    console.log(`Found ${results.length} results for "${searchTerm}"`);
+    // For now, just log results - can be enhanced later
 }
 
 // Initialize evidence map
