@@ -116,15 +116,14 @@ const caseData = {
 };
 
 // DOM elements
-const navButtons = document.querySelectorAll('.nav-btn');
+const navItems = document.querySelectorAll('.nav-item');
 const contentSections = document.querySelectorAll('.content-section');
-const documentsGrid = document.getElementById('documents-grid');
+const documentsGrid = document.getElementById('evidence-grid');
 const categoryFilter = document.getElementById('category-filter');
-const documentSearch = document.getElementById('document-search');
+const documentSearch = document.getElementById('evidence-search');
 const timeline = document.getElementById('case-timeline');
-const globalSearch = document.getElementById('global-search');
-const searchBtn = document.getElementById('search-btn');
-const searchResults = document.getElementById('search-results');
+const globalSearch = document.getElementById('header-search');
+const currentSectionSpan = document.getElementById('current-section');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
