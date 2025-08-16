@@ -237,8 +237,7 @@ function initSearch() {
         });
     }
     
-    if (searchBtn && globalSearch) {
-        searchBtn.addEventListener('click', performGlobalSearch);
+    if (globalSearch) {
         globalSearch.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 performGlobalSearch();
