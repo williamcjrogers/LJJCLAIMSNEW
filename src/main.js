@@ -1,9 +1,12 @@
 // Main Application Entry Point
 import { Sidebar } from './components/Sidebar.js';
 import { Dashboard } from './modules/Dashboard.js';
+import { MasterDashboard } from './modules/MasterDashboard.js';
+import { HeadOfClaimView } from './modules/HeadOfClaimView.js';
 import { caseData } from './data/caseData.js';
 import { buildingServicesClaims } from './data/buildingServicesClaims.js';
 import { documentsData } from './data/documentsData.js';
+import { claimsHierarchy } from './data/claimsHierarchy.js';
 
 class ClaimManagementApp {
     constructor() {
@@ -13,7 +16,15 @@ class ClaimManagementApp {
         this.data = {
             case: caseData,
             claims: buildingServicesClaims,
-            documents: documentsData
+            documents: documentsData,
+            hierarchy: claimsHierarchy
+        };
+        
+        // Current view state
+        this.currentView = {
+            type: 'master', // 'master', 'head-of-claim', 'sub-claim'
+            headId: null,
+            subClaimId: null
         };
         
         this.init();
@@ -72,10 +83,15 @@ class ClaimManagementApp {
     }
     
     initializeModules() {
-        // Initialize Dashboard
+        // Initialize Master Dashboard as the default view
         const mainContent = document.querySelector('.main-content') || 
                            this.createContainer('main-content');
         
+        this.modules.masterDashboard = new MasterDashboard(mainContent, {
+            onHeadOfClaimClick: (headId, action) => this.navigateToHeadOfClaim(headId, action)
+        });
+        
+        // Keep original dashboard for legacy compatibility
         this.modules.dashboard = new Dashboard(mainContent, this.data.case);
         
         // Initialize other modules as needed
@@ -244,6 +260,84 @@ class ClaimManagementApp {
         // Show error notification
         console.error(message);
         // Implement proper error UI
+    }
+    
+    // Navigation methods for hierarchical claims
+    navigateToHeadOfClaim(headId, action = 'overview') {
+        try {
+            const container = this.getOrCreateSectionContainer('head-of-claim-view');
+            
+            // Create or update the head of claim view
+            this.modules.headOfClaimView = new HeadOfClaimView(container, headId, {
+                onBackToMaster: () => this.navigateToMaster(),
+                onSubClaimClick: (headId, subClaimId) => this.navigateToSubClaim(headId, subClaimId)
+            });
+            
+            // Update view state
+            this.currentView = {
+                type: 'head-of-claim',
+                headId: headId,
+                subClaimId: null
+            };
+            
+            // Hide other sections and show this one
+            this.hideCurrentSection();
+            this.showSection('head-of-claim-view');
+            
+            // Update navigation
+            const headData = this.data.hierarchy.heads_of_claim[headId];
+            this.updateBreadcrumb(headData?.title || 'Head of Claim');
+            
+            // Update sidebar if needed
+            this.components.sidebar?.setActiveSection('claims');
+            
+        } catch (error) {
+            console.error('Error navigating to head of claim:', error);
+            this.showError(`Failed to load head of claim: ${headId}`);
+        }
+    }
+    
+    navigateToMaster() {
+        try {
+            // Show master dashboard
+            this.hideCurrentSection();
+            
+            // Re-initialize or show master dashboard
+            if (this.modules.masterDashboard) {
+                this.modules.masterDashboard.refresh();
+                this.showSection('master-dashboard');
+            }
+            
+            // Update view state
+            this.currentView = {
+                type: 'master',
+                headId: null,
+                subClaimId: null
+            };
+            
+            // Update navigation
+            this.updateBreadcrumb('Master Dashboard');
+            this.components.sidebar?.setActiveSection('dashboard');
+            
+        } catch (error) {
+            console.error('Error navigating to master:', error);
+            this.showError('Failed to load master dashboard');
+        }
+    }
+    
+    navigateToSubClaim(headId, subClaimId) {
+        // TODO: Implement detailed sub-claim view
+        console.log(`Navigate to sub-claim: ${headId} -> ${subClaimId}`);
+        
+        // Update view state
+        this.currentView = {
+            type: 'sub-claim',
+            headId: headId,
+            subClaimId: subClaimId
+        };
+        
+        // For now, just show an alert
+        alert(`Sub-claim view for ${subClaimId} in ${headId} - TODO: Implement detailed view`);
     }
     
     // Public API methods

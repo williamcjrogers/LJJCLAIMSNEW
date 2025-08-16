@@ -63,7 +63,7 @@ export class Sidebar {
     
     renderNavItems() {
         const navItems = [
-            { id: 'dashboard', icon: 'fas fa-tachometer-alt', label: 'Dashboard' },
+            { id: 'dashboard', icon: 'fas fa-tachometer-alt', label: 'Master Claims' },
             { id: 'strategy', icon: 'fas fa-chess-knight', label: 'Strategy Roadmap' },
             { id: 'timeline', icon: 'fas fa-history', label: 'Case Timeline' },
             { id: 'evidence', icon: 'fas fa-folder-open', label: 'Evidence Library' },

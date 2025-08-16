@@ -1,20 +1,25 @@
 // Hierarchical Claims Structure
-// This will be populated with data from the Excel file
+// Updated with real LJJ data from "LJJ Deductions Breakdown 15.08.25.csv"
+
+import { ljjClaimsData } from './ljjClaimsData.js';
 
 export const claimsHierarchy = {
     master: {
         case_id: 'WEL-2024-001',
-        case_name: 'United Living (South) Limited v LJJ Limited',
-        total_claim_value: 2400000,
-        estimated_recovery: { min: 1200000, max: 1800000, percentage: '50-75%' },
-        contract_value: 2400000,
+        case_name: 'United Living (South) Limited v LJJ Limited - LJJ Deductions',
+        total_claim_value: 4990000, // Calculated from LJJ data: SVP(1.67M) + BMS(0.95M) + MBS(0.85M) + ELE(0.42M) + LSS(0.38M) + Design(0.25M) + OH&P(0.2M) + Snagging(0.15M) + M&E(0.12M)
+        estimated_recovery: { min: 2495000, max: 3742500, percentage: '50-75%' },
+        contract_value: 4990000,
         status: 'active',
-        overall_strength: 78
+        overall_strength: 75 // Average across all heads
     },
     
     heads_of_claim: {
-        // This structure will be populated from Excel data
-        // Example structure:
+        // Real LJJ data imported from CSV
+        ...ljjClaimsData.heads_of_claim,
+        
+        // Legacy example structure (now commented out):
+        /*
         svp_systems: {
             id: 'hoc-001',
             title: 'SVP (Soil Vent Pipe) Systems',
@@ -176,8 +181,7 @@ export const claimsHierarchy = {
                 }
             }
         }
-        
-        // Additional heads of claim will be added from Excel data
+        */
     },
     
     // Cross-cutting concerns
