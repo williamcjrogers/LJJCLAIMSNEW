@@ -63,12 +63,14 @@ A comprehensive legal case management system for the LJJ SVP claim with AI-power
 ### 🚀 **Local Development**
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/williamcjrogers/LJJCLAIMSNEW.git
    cd LJJCLAIMSNEW
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -93,11 +95,13 @@ npm run serve        # Serve on port 8000
 ### 🌐 **Deployment**
 
 #### **Automatic GitHub Pages Deployment**
+
 - Push to `main` branch triggers automatic deployment
 - Check Actions tab for deployment status
 - Live at: `https://williamcjrogers.github.io/LJJCLAIMSNEW/`
 
 #### **Manual Deployment**
+
 ```bash
 # Use the deployment script
 ./deploy-github.ps1
@@ -110,6 +114,7 @@ git push origin main
 ```
 
 #### **Vercel Deployment**
+
 ```bash
 npm run deploy
 ```

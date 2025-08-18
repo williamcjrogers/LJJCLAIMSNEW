@@ -1,7 +1,7 @@
 // Main Application Entry Point
 import { Sidebar } from './components/Sidebar.js';
 import { Dashboard } from './modules/Dashboard.js';
-import { MasterDashboard } from './modules/MasterDashboard.js';
+import MasterDashboard from './modules/MasterDashboard_clean.js';
 import { HeadOfClaimView } from './modules/HeadOfClaimView.js';
 // import { EnhancedEvidenceViewer } from './modules/EnhancedEvidenceViewer.js';
 import { caseData } from './data/caseData.js';
