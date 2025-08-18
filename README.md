@@ -67,13 +67,38 @@ A comprehensive legal case management system for the LJJ SVP claim with AI-power
    # No build process required - it's a static site
    ```
 
-3. **Or deploy to Vercel/Netlify**
+3. **Or deploy to Vercel (Recommended)**
    ```bash
-   # Deploy to Vercel
-   vercel --prod
+   # Quick deployment
+   npm run deploy
    
-   # Or drag folder to netlify.com/drop
+   # Or use deployment script
+   ./deploy.sh  # Unix/Linux/macOS
+   deploy.bat   # Windows
+   
+   # Or manual deployment
+   npx vercel --prod --yes
    ```
+
+## 🚀 Vercel Deployment
+
+This system is optimized for **one-click Vercel deployment**:
+
+- ✅ **Zero Configuration**: Pre-configured `vercel.json`
+- ✅ **No Build Required**: Static ES6 module application  
+- ✅ **Global CDN**: Automatic edge distribution
+- ✅ **HTTPS**: SSL certificate included
+- ✅ **Performance**: Optimized caching headers
+
+### Deploy Commands:
+```bash
+npm run deploy          # Production deployment
+npm run deploy:preview  # Preview deployment
+npm run serve          # Local testing
+```
+
+📖 **Full deployment guide**: See `VERCEL_DEPLOYMENT_GUIDE.md`  
+🚀 **Quick start**: See `DEPLOY_NOW.md`
 
 ## File Structure
 
