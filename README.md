@@ -60,28 +60,59 @@ A comprehensive legal case management system for the LJJ SVP claim with AI-power
 
 ## Quick Start
 
+### 🚀 **Local Development**
+
 1. **Clone the repository**
-
    ```bash
-   git clone https://github.com/YOUR_USERNAME/ljj-svp-claim-management.git
-   cd ljj-svp-claim-management
+   git clone https://github.com/williamcjrogers/LJJCLAIMSNEW.git
+   cd LJJCLAIMSNEW
    ```
 
-2. **Open in browser**
-
+2. **Install dependencies**
    ```bash
-   # Simply open index.html in your browser
-   # No build process required - it's a static site
+   npm install
    ```
 
-3. **Or deploy to Vercel/Netlify**
-
+3. **Start development server**
    ```bash
-   # Deploy to Vercel
-   vercel --prod
-
-   # Or drag folder to netlify.com/drop
+   npm run dev
+   # Opens at http://localhost:3000
    ```
+
+### 🏗️ **Development Commands**
+
+```bash
+npm run typecheck    # TypeScript type checking
+npm run lint         # ESLint code quality check
+npm run lint:fix     # Auto-fix linting issues
+npm run format       # Prettier code formatting
+npm run build        # Build for production
+npm run serve        # Serve on port 8000
+```
+
+### 🌐 **Deployment**
+
+#### **Automatic GitHub Pages Deployment**
+- Push to `main` branch triggers automatic deployment
+- Check Actions tab for deployment status
+- Live at: `https://williamcjrogers.github.io/LJJCLAIMSNEW/`
+
+#### **Manual Deployment**
+```bash
+# Use the deployment script
+./deploy-github.ps1
+
+# Or deploy manually
+npm run build
+git add .
+git commit -m "Deploy to production"
+git push origin main
+```
+
+#### **Vercel Deployment**
+```bash
+npm run deploy
+```
 
 ## File Structure
 
