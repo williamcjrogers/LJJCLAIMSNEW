@@ -265,70 +265,66 @@ export const claimsHierarchy = {
             id: 'hoc7',
             name: 'Snagging - Kilmurray',
             folderRef: '7',
-            totalClaim: 12000,
+            totalClaim: 120000,
             evidenceStrength: 95,
             successProbability: 90,
-            success_probability: 90,
-            success_reasoning: 'Kilmurray reports provide independent third-party evidence. Snagging items clearly documented with photographic evidence.',
-            evidence_strength: 95,
             status: 'active',
-            
-            timeline: [],
-            
-            defects: {
-                snagging_main: {
-                    id: 'snag-001',
-                    title: 'Snagging',
-                    description: 'Outstanding defects list',
-                    value: 120000,
-                    timeline: [],
-                    evidence: [],
-                    issues: ['Outstanding defects', 'Incomplete works']
+            subClaims: [
+                {
+                    id: 'sc7-1',
+                    name: 'Snagging',
+                    defectNumber: 1,
+                    claimAmount: 120000,
+                    evidenceStrength: 95,
+                    successProbability: 90,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e7-1-1', title: 'Kilmurray Snagging Report', type: 'report' },
+                        { id: 'e7-1-2', title: 'Photographic Evidence', type: 'photo' },
+                        { id: 'e7-1-3', title: 'Outstanding Defects List', type: 'document' }
+                    ]
                 }
-            }
+            ]
         },
-        
-        // 8. M&E Monitoring
-        me_monitoring: {
-            id: 'hoc-008',
-            folder_ref: '8',
-            title: 'M&E Monitoring',
-            description: 'Quinn Ross M&E monitoring and witnessing failures',
-            claim_value: 100000,
-            success_probability: 70,
-            success_reasoning: 'Quinn Ross documentation provides evidence of monitoring failures. Witnessing requests ignored or failed.',
-            evidence_strength: 75,
+        {
+            id: 'hoc8',
+            name: 'M&E Monitoring',
+            folderRef: '8',
+            totalClaim: 100000,
+            evidenceStrength: 75,
+            successProbability: 70,
             status: 'active',
-            
-            timeline: [],
-            
-            defects: {
-                quinn_ross: {
-                    id: 'me-001',
-                    title: 'Quinn Ross',
-                    description: 'M&E monitoring failures',
-                    value: 100000,
-                    timeline: [],
-                    evidence: [],
-                    issues: ['Witnessing failures', 'Documentation gaps']
+            subClaims: [
+                {
+                    id: 'sc8-1',
+                    name: 'Quinn Ross',
+                    defectNumber: 1,
+                    claimAmount: 100000,
+                    evidenceStrength: 75,
+                    successProbability: 70,
+                    status: 'pending',
+                    evidence: [
+                        { id: 'e8-1-1', title: 'Quinn Ross M&E Monitoring Reports', type: 'report' },
+                        { id: 'e8-1-2', title: 'Witnessing Request Documentation', type: 'document' }
+                    ]
                 }
-            }
+            ]
         }
-    }
+    ]
 };
 
 // Calculate summary statistics
 function calculateSummary() {
-    const heads = Object.values(claimsHierarchy.heads_of_claim);
+    const heads = claimsHierarchy.headsOfClaim;
     let totalValue = 0;
     let totalStrength = 0;
     let totalSubClaims = 0;
     
     heads.forEach(head => {
-        totalValue += head.claim_value;
-        totalStrength += head.success_probability;
-        if (head.defects) {
-            totalSubClaims += Object.keys(head.defects).length;
+        totalValue += head.totalClaim;
+        totalStrength += head.successProbability;
+        if (head.subClaims) {
+            totalSubClaims += head.subClaims.length;
         }
     });
     
@@ -337,8 +333,8 @@ function calculateSummary() {
         total_sub_claims: totalSubClaims,
         total_claim_value: totalValue,
         average_strength: Math.round(totalStrength / heads.length),
-        strongest_claim: heads.reduce((a, b) => a.success_probability > b.success_probability ? a : b),
-        weakest_claim: heads.reduce((a, b) => a.success_probability < b.success_probability ? a : b)
+        strongest_claim: heads.reduce((a, b) => a.successProbability > b.successProbability ? a : b).id,
+        weakest_claim: heads.reduce((a, b) => a.successProbability < b.successProbability ? a : b).id
     };
 }
 
@@ -349,68 +345,68 @@ export const ClaimsHierarchyUtils = {
     
     // Calculate summary statistics
     calculateSummary() {
-        const heads = Object.values(claimsHierarchy.heads_of_claim);
-        const summary = claimsHierarchy.summary;
+        const heads = claimsHierarchy.headsOfClaim;
+        const summary = claimsHierarchy.summary || {};
         
         summary.total_heads_of_claim = heads.length;
         summary.total_sub_claims = heads.reduce((total, head) => 
-            total + Object.keys(head.defects || {}).length, 0);
+            total + (head.subClaims?.length || 0), 0);
         summary.total_claim_value = heads.reduce((total, head) => 
-            total + (head.claim_value || 0), 0);
+            total + (head.totalClaim || 0), 0);
         summary.average_strength = heads.reduce((total, head) => 
-            total + (head.evidence_strength || 0), 0) / heads.length;
+            total + (head.evidenceStrength || 0), 0) / heads.length;
         
         // Find strongest and weakest claims
-        const sortedByStrength = heads.sort((a, b) => 
-            (b.evidence_strength || 0) - (a.evidence_strength || 0));
+        const sortedByStrength = [...heads].sort((a, b) => 
+            (b.evidenceStrength || 0) - (a.evidenceStrength || 0));
         summary.strongest_claim = sortedByStrength[0]?.id || null;
         summary.weakest_claim = sortedByStrength[sortedByStrength.length - 1]?.id || null;
         
+        claimsHierarchy.summary = summary;
         return summary;
     },
     
     // Get head of claim by ID
     getHeadOfClaim(headId) {
-        return claimsHierarchy.heads_of_claim[headId] || null;
+        return claimsHierarchy.headsOfClaim.find(head => head.id === headId) || null;
     },
     
     // Get sub-claim by head ID and sub-claim ID
     getSubClaim(headId, subClaimId) {
         const head = this.getHeadOfClaim(headId);
-        return head?.defects?.[subClaimId] || null;
+        return head?.subClaims?.find(sub => sub.id === subClaimId) || null;
     },
     
     // Get timeline for specific head of claim
     getHeadTimeline(headId) {
-        const head = this.getHeadOfClaim(headId);
-        return head?.timeline || [];
+        // Returns events from master timeline that affect this head
+        return claimsHierarchy.masterTimeline.filter(event => 
+            event.affectedHeads?.includes(headId)) || [];
     },
     
-    // Get all events from shared timeline affecting a specific head
-    getSharedTimelineForHead(headId) {
-        return claimsHierarchy.shared_timeline.filter(event => 
-            event.affected_claims?.includes(headId)) || [];
+    // Get all events from master timeline affecting a specific head
+    getMasterTimelineForHead(headId) {
+        return claimsHierarchy.masterTimeline.filter(event => 
+            event.affectedHeads?.includes(headId)) || [];
     },
     
-    // Get combined timeline for a head (own + shared events)
+    // Get combined timeline for a head (master events affecting this head)
     getCombinedTimeline(headId) {
-        const headTimeline = this.getHeadTimeline(headId);
-        const sharedEvents = this.getSharedTimelineForHead(headId);
-        
-        return [...headTimeline, ...sharedEvents]
+        return this.getMasterTimelineForHead(headId)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     },
     
     // Add new head of claim from Excel data
     addHeadOfClaim(headData) {
-        claimsHierarchy.heads_of_claim[headData.id] = headData;
+        claimsHierarchy.headsOfClaim.push(headData);
         this.calculateSummary();
     },
     
     // Update existing head of claim
     updateHeadOfClaim(headId, updates) {
-        if (claimsHierarchy.heads_of_claim[headId]) {
-            Object.assign(claimsHierarchy.heads_of_claim[headId], updates);
+        const headIndex = claimsHierarchy.headsOfClaim.findIndex(head => head.id === headId);
+        if (headIndex !== -1) {
+            Object.assign(claimsHierarchy.headsOfClaim[headIndex], updates);
             this.calculateSummary();
         }
     }
