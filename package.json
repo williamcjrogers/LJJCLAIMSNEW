@@ -7,11 +7,16 @@
     "dev": "python -m http.server 3000",
     "build": "echo 'ES6 modules - no build needed'",
     "deploy": "vercel --prod",
+    "deploy:preview": "vercel",
     "serve": "python -m http.server 8000",
     "start": "npm run serve",
     "vercel-dev": "vercel dev --listen 3000",
+    "vercel-pull": "vercel pull",
     "lint": "echo 'Add ESLint configuration'",
-    "format": "echo 'Add Prettier configuration'"
+    "format": "echo 'Add Prettier configuration'",
+    "test-deployment": "node -e \"console.log('Testing deployment prerequisites...'); process.exit(0);\"",
+    "clean": "rm -rf .vercel node_modules package-lock.json",
+    "reinstall": "npm run clean && npm install"
   },
   "keywords": [
     "case-management",
@@ -30,7 +35,7 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "vercel": "^33.0.0"
+    "vercel": "^46.0.2"
   },
   "browserslist": [
     "last 2 versions",
