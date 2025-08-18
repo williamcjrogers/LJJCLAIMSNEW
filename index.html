@@ -875,18 +875,7 @@ Examples:
       </main>
     </div>
 
-    <!-- Load data and app scripts -->
-    <script src="./building-services-claims.js"></script>
-    <script src="./comprehensive-app.js"></script>
-    <script>
-      // Initialize after DOM is ready
-      document.addEventListener('DOMContentLoaded', function () {
-        if (window.ComprehensiveClaimSystem) {
-          window.app = new window.ComprehensiveClaimSystem();
-        } else {
-          console.error('ComprehensiveClaimSystem not found');
-        }
-      });
-    </script>
+    <!-- Load app scripts -->
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 // Claims Navigator Module - Handles navigation between master dashboard and individual timelines
-import { MasterDashboard } from './MasterDashboard.js';
+import { MasterDashboard } from './MasterDashboard_clean.js';
 import { IndividualTimeline } from './IndividualTimeline.js';
 import { realClaimsHierarchy } from '../data/realClaimsData.js';
 

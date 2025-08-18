@@ -1,7 +1,7 @@
 // Main Application Entry Point
 import { Sidebar } from './components/Sidebar.js';
 import { Dashboard } from './modules/Dashboard.js';
-import { MasterDashboard } from './modules/MasterDashboard.js';
+import { MasterDashboard } from './modules/MasterDashboard_clean.js';
 import { HeadOfClaimView } from './modules/HeadOfClaimView.js';
 // import { EnhancedEvidenceViewer } from './modules/EnhancedEvidenceViewer.js';
 import { caseData } from './data/caseData.js';
@@ -60,61 +60,57 @@ class ClaimManagementApp {
   }
 
   async loadStyles() {
-    const stylesheets = [
-      './src/styles/base/variables.css',
-      './src/styles/base/reset.css',
-      './src/styles/components/sidebar.css',
-    ];
-
-    const loadPromises = stylesheets.map(href => {
-      return new Promise((resolve, reject) => {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.onload = () => {
-          console.log(`Loaded stylesheet: ${href}`);
-          resolve();
-        };
-        link.onerror = error => {
-          console.error(`Failed to load stylesheet: ${href}`, error);
-          reject(error);
-        };
-        document.head.appendChild(link);
-      });
-    });
-
-    await Promise.all(loadPromises);
+    // Styles are already loaded via HTML, so we don't need to load them dynamically
+    console.log('Styles already loaded via HTML');
   }
 
   initializeComponents() {
     // Initialize Sidebar
-    const sidebarContainer =
-      document.querySelector('.sidebar-container') || this.createContainer('sidebar-container');
+    const sidebarContainer = document.querySelector('.sidebar');
 
-    this.components.sidebar = new Sidebar(sidebarContainer, {
-      onSectionChange: section => this.switchSection(section),
-      user: {
-        name: 'Public User',
-        role: 'Viewer',
-        avatar: '<i class="fas fa-user"></i>',
-      },
-    });
+    if (sidebarContainer) {
+      this.components.sidebar = new Sidebar(sidebarContainer, {
+        onSectionChange: section => this.switchSection(section),
+        user: {
+          name: 'Public User',
+          role: 'Viewer',
+          avatar: '<i class="fas fa-user"></i>',
+        },
+      });
+    } else {
+      console.error('Sidebar container not found');
+    }
   }
 
   initializeModules() {
     // Initialize Master Dashboard as the default view
-    const mainContent =
-      document.querySelector('.main-content') || this.createContainer('main-content');
+    const mainContent = document.querySelector('.main-content');
 
-    this.modules.masterDashboard = new MasterDashboard(mainContent, {
-      onHeadOfClaimClick: (headId, action) => this.navigateToHeadOfClaim(headId, action),
-    });
+    if (mainContent) {
+      // Hide the existing dashboard section
+      const existingDashboard = document.getElementById('dashboard');
+      if (existingDashboard) {
+        existingDashboard.classList.remove('active');
+      }
 
-    // Keep original dashboard for legacy compatibility
-    this.modules.dashboard = new Dashboard(mainContent, this.data.case);
+      // Create a container for the master dashboard
+      const masterDashboardContainer = document.createElement('section');
+      masterDashboardContainer.id = 'master-dashboard';
+      masterDashboardContainer.className = 'content-section active';
+      mainContent.appendChild(masterDashboardContainer);
 
-    // Initialize other modules as needed
-    this.initializeLazyModules();
+      this.modules.masterDashboard = new MasterDashboard(masterDashboardContainer, {
+        onHeadOfClaimClick: (headId, action) => this.navigateToHeadOfClaim(headId, action),
+      });
+
+      // Keep original dashboard for legacy compatibility
+      this.modules.dashboard = new Dashboard(mainContent, this.data.case);
+
+      // Initialize other modules as needed
+      this.initializeLazyModules();
+    } else {
+      console.error('Main content container not found');
+    }
   }
 
   async initializeLazyModules() {
@@ -319,11 +315,8 @@ class ClaimManagementApp {
       // Show master dashboard
       this.hideCurrentSection();
 
-      // Re-initialize or show master dashboard
-      if (this.modules.masterDashboard) {
-        this.modules.masterDashboard.refresh();
-        this.showSection('master-dashboard');
-      }
+      // Show master dashboard
+      this.showSection('master-dashboard');
 
       // Update view state
       this.currentView = {
