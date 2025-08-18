@@ -2,24 +2,24 @@
 import { realClaimsHierarchy, RealClaimsUtils } from '../data/realClaimsData.js';
 
 export class MasterDashboard {
-    constructor() {
-        this.claimsData = realClaimsHierarchy;
-        this.container = null;
-        this.init();
-    }
-    
-    init() {
-        // Initialization if needed
-    }
-    
-    render(containerId) {
-        this.container = document.getElementById(containerId);
-        if (!this.container) {
-            console.error(`Container not found: ${containerId}`);
-            return;
-        }
+  constructor() {
+    this.claimsData = realClaimsHierarchy;
+    this.container = null;
+    this.init();
+  }
 
-        this.container.innerHTML = `
+  init() {
+    // Initialization if needed
+  }
+
+  render(containerId) {
+    this.container = document.getElementById(containerId);
+    if (!this.container) {
+      console.error(`Container not found: ${containerId}`);
+      return;
+    }
+
+    this.container.innerHTML = `
             <div class="master-dashboard">
                 ${this.renderHeader()}
                 ${this.renderOverviewMetrics()}
@@ -29,12 +29,12 @@ export class MasterDashboard {
             </div>
         `;
 
-        this.attachEventListeners();
-        this.renderCharts();
-    }
+    this.attachEventListeners();
+    this.renderCharts();
+  }
 
-    renderHeader() {
-        return `
+  renderHeader() {
+    return `
             <div class="dashboard-header">
                 <h1>Master Claims Dashboard</h1>
                 <div class="project-info">
@@ -47,18 +47,19 @@ export class MasterDashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderOverviewMetrics() {
-        const totalHeads = this.claimsData.headsOfClaim.length;
-        const totalSubClaims = this.claimsData.headsOfClaim.reduce((sum, head) => 
-            sum + head.subClaims.length, 0
-        );
-        const totalValue = RealClaimsUtils.getTotalClaimValue();
-        const avgStrength = RealClaimsUtils.calculateOverallStrength();
-        const avgSuccess = RealClaimsUtils.calculateOverallSuccess();
+  }
 
-        return `
+  renderOverviewMetrics() {
+    const totalHeads = this.claimsData.headsOfClaim.length;
+    const totalSubClaims = this.claimsData.headsOfClaim.reduce(
+      (sum, head) => sum + head.subClaims.length,
+      0
+    );
+    const totalValue = RealClaimsUtils.getTotalClaimValue();
+    const avgStrength = RealClaimsUtils.calculateOverallStrength();
+    const avgSuccess = RealClaimsUtils.calculateOverallSuccess();
+
+    return `
             <div class="overview-metrics">
                 <div class="metric-card">
                     <div class="metric-icon">
@@ -111,10 +112,10 @@ export class MasterDashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderHeadsOfClaimGrid() {
-        return `
+  }
+
+  renderHeadsOfClaimGrid() {
+    return `
             <div class="heads-of-claim-section">
                 <h2>Heads of Claim Overview</h2>
                 <div class="heads-grid">
@@ -122,13 +123,13 @@ export class MasterDashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderHeadOfClaimCard(head) {
-        const subClaimsCount = head.subClaims.length;
-        const totalSubClaimValue = head.subClaims.reduce((sum, sub) => sum + sub.claimAmount, 0);
-        
-        return `
+  }
+
+  renderHeadOfClaimCard(head) {
+    const subClaimsCount = head.subClaims.length;
+    const totalSubClaimValue = head.subClaims.reduce((sum, sub) => sum + sub.claimAmount, 0);
+
+    return `
             <div class="head-claim-card" data-head-id="${head.id}">
                 <div class="card-header">
                     <h3>${head.name}</h3>
@@ -171,9 +172,14 @@ export class MasterDashboard {
                     <div class="subclaims-preview">
                         <span class="preview-label">Key Defects:</span>
                         <ul>
-                            ${head.subClaims.slice(0, 2).map(sub => `
+                            ${head.subClaims
+                              .slice(0, 2)
+                              .map(
+                                sub => `
                                 <li>${sub.name} - £${sub.claimAmount.toLocaleString()}</li>
-                            `).join('')}
+                            `
+                              )
+                              .join('')}
                             ${subClaimsCount > 2 ? `<li class="more">+${subClaimsCount - 2} more...</li>` : ''}
                         </ul>
                     </div>
@@ -184,10 +190,10 @@ export class MasterDashboard {
                 </button>
             </div>
         `;
-    }
-    
-    renderSummaryCharts() {
-        return `
+  }
+
+  renderSummaryCharts() {
+    return `
             <div class="summary-charts">
                 <h2>Analysis Charts</h2>
                 <div class="charts-grid">
@@ -206,145 +212,170 @@ export class MasterDashboard {
                 </div>
             </div>
         `;
-    }
+  }
 
-    renderMasterTimeline() {
-        return `
+  renderMasterTimeline() {
+    return `
             <div class="master-timeline-section">
                 <h2>Master Project Timeline</h2>
                 <div class="timeline-container">
                     <div class="timeline-line"></div>
-                    ${this.claimsData.masterTimeline.map(event => `
+                    ${this.claimsData.masterTimeline
+                      .map(
+                        event => `
                         <div class="timeline-event">
                             <div class="timeline-marker"></div>
                             <div class="timeline-content">
-                                <div class="event-date">${new Date(event.date).toLocaleDateString('en-GB', {
+                                <div class="event-date">${new Date(event.date).toLocaleDateString(
+                                  'en-GB',
+                                  {
                                     day: 'numeric',
                                     month: 'short',
-                                    year: 'numeric'
-                                })}</div>
+                                    year: 'numeric',
+                                  }
+                                )}</div>
                                 <div class="event-title">${event.title}</div>
                                 <div class="event-description">${event.description}</div>
                                 <div class="affected-heads">
                                     <span class="label">Affects:</span>
-                                    ${event.affectedHeads.map(headId => {
-                                        const head = this.claimsData.headsOfClaim.find(h => h.id === headId);
-                                        return head ? `<span class="head-tag">${head.name}</span>` : '';
-                                    }).join('')}
+                                    ${event.affectedHeads
+                                      .map(headId => {
+                                        const head = this.claimsData.headsOfClaim.find(
+                                          h => h.id === headId
+                                        );
+                                        return head
+                                          ? `<span class="head-tag">${head.name}</span>`
+                                          : '';
+                                      })
+                                      .join('')}
                                 </div>
                             </div>
                         </div>
-                    `).join('')}
+                    `
+                      )
+                      .join('')}
                 </div>
             </div>
         `;
-    }
+  }
 
-    renderCharts() {
-        // Value Distribution Chart
-        const valueCtx = document.getElementById('valueChart');
-        if (valueCtx) {
-            new Chart(valueCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: this.claimsData.headsOfClaim.map(h => h.name),
-                    datasets: [{
-                        data: this.claimsData.headsOfClaim.map(h => h.totalClaim),
-                        backgroundColor: [
-                            '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
-                            '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
-                        ]
-                    }]
+  renderCharts() {
+    // Value Distribution Chart
+    const valueCtx = document.getElementById('valueChart');
+    if (valueCtx) {
+      new Chart(valueCtx, {
+        type: 'doughnut',
+        data: {
+          labels: this.claimsData.headsOfClaim.map(h => h.name),
+          datasets: [
+            {
+              data: this.claimsData.headsOfClaim.map(h => h.totalClaim),
+              backgroundColor: [
+                '#3b82f6',
+                '#10b981',
+                '#f59e0b',
+                '#ef4444',
+                '#8b5cf6',
+                '#ec4899',
+                '#06b6d4',
+                '#84cc16',
+              ],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: context => {
+                  return `${context.label}: £${context.raw.toLocaleString()}`;
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    return `${context.label}: £${context.raw.toLocaleString()}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Evidence Strength Chart
-        const strengthCtx = document.getElementById('strengthChart');
-        if (strengthCtx) {
-            new Chart(strengthCtx, {
-                type: 'bar',
-                data: {
-                    labels: this.claimsData.headsOfClaim.map(h => h.name),
-                    datasets: [{
-                        label: 'Evidence Strength (%)',
-                        data: this.claimsData.headsOfClaim.map(h => h.evidenceStrength),
-                        backgroundColor: this.claimsData.headsOfClaim.map(h => 
-                            this.getStrengthColor(h.evidenceStrength)
-                        )
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, max: 100 }
-                    }
-                }
-            });
-        }
-
-        // Success Probability Chart  
-        const successCtx = document.getElementById('successChart');
-        if (successCtx) {
-            new Chart(successCtx, {
-                type: 'radar',
-                data: {
-                    labels: this.claimsData.headsOfClaim.map(h => h.name),
-                    datasets: [{
-                        label: 'Success Probability',
-                        data: this.claimsData.headsOfClaim.map(h => h.successProbability),
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.2)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: { beginAtZero: true, max: 100 }
-                    }
-                }
-            });
-        }
+              },
+            },
+          },
+        },
+      });
     }
 
-    attachEventListeners() {
-        // View timeline buttons
-        document.querySelectorAll('.btn-view-timeline').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // Navigation handled by onclick attribute
-            });
-        });
+    // Evidence Strength Chart
+    const strengthCtx = document.getElementById('strengthChart');
+    if (strengthCtx) {
+      new Chart(strengthCtx, {
+        type: 'bar',
+        data: {
+          labels: this.claimsData.headsOfClaim.map(h => h.name),
+          datasets: [
+            {
+              label: 'Evidence Strength (%)',
+              data: this.claimsData.headsOfClaim.map(h => h.evidenceStrength),
+              backgroundColor: this.claimsData.headsOfClaim.map(h =>
+                this.getStrengthColor(h.evidenceStrength)
+              ),
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100 },
+          },
+        },
+      });
     }
 
-    getStrengthColor(strength) {
-        if (strength >= 85) return '#10b981';
-        if (strength >= 70) return '#3b82f6';
-        if (strength >= 50) return '#f59e0b';
-        return '#ef4444';
+    // Success Probability Chart
+    const successCtx = document.getElementById('successChart');
+    if (successCtx) {
+      new Chart(successCtx, {
+        type: 'radar',
+        data: {
+          labels: this.claimsData.headsOfClaim.map(h => h.name),
+          datasets: [
+            {
+              label: 'Success Probability',
+              data: this.claimsData.headsOfClaim.map(h => h.successProbability),
+              borderColor: '#8b5cf6',
+              backgroundColor: 'rgba(139, 92, 246, 0.2)',
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: { beginAtZero: true, max: 100 },
+          },
+        },
+      });
     }
+  }
 
-    getSuccessClass(probability) {
-        if (probability >= 80) return 'success-high';
-        if (probability >= 60) return 'success-medium';
-        return 'success-low';
-    }
+  attachEventListeners() {
+    // View timeline buttons
+    document.querySelectorAll('.btn-view-timeline').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        // Navigation handled by onclick attribute
+      });
+    });
+  }
+
+  getStrengthColor(strength) {
+    if (strength >= 85) return '#10b981';
+    if (strength >= 70) return '#3b82f6';
+    if (strength >= 50) return '#f59e0b';
+    return '#ef4444';
+  }
+
+  getSuccessClass(probability) {
+    if (probability >= 80) return 'success-high';
+    if (probability >= 60) return 'success-medium';
+    return 'success-low';
+  }
 }
 
 export default MasterDashboard;

@@ -1,6 +1,7 @@
 // Comprehensive Building Services Claims Structure - Parent/Sub-Claim Hierarchy
+import type { BuildingServicesClaims } from './src/types/claims.js';
 
-const buildingServicesClaims = {
+const buildingServicesClaims: BuildingServicesClaims = {
   // SVP PARENT FOLDER
   SVP: {
     folder_type: 'parent',
@@ -475,29 +476,27 @@ const buildingServicesClaims = {
 };
 
 // Calculate total values across all parent folders
-buildingServicesClaims.TOTALS = {
-  total_claim_value: Object.values(buildingServicesClaims).reduce(
-    (sum, folder) => (folder.folder_type === 'parent' ? sum + folder.total_claim_value : sum),
-    0
-  ),
+const parentClaims = [
+  buildingServicesClaims.SVP,
+  buildingServicesClaims.BMS,
+  buildingServicesClaims['Mechanical Building Services'],
+  buildingServicesClaims.Electrical,
+  buildingServicesClaims['Life Safety Systems'],
+];
 
-  total_sub_claims: Object.values(buildingServicesClaims).reduce(
-    (sum, folder) =>
-      folder.folder_type === 'parent' ? sum + Object.keys(folder.sub_claims).length : sum,
+buildingServicesClaims.TOTALS = {
+  total_claim_value: parentClaims.reduce((sum, folder) => sum + folder.total_claim_value, 0),
+
+  total_sub_claims: parentClaims.reduce(
+    (sum, folder) => sum + Object.keys(folder.sub_claims).length,
     0
   ),
 
   weighted_success_probability: Math.round(
-    Object.values(buildingServicesClaims).reduce((sum, folder) => {
-      if (folder.folder_type === 'parent') {
-        return sum + folder.success_probability * folder.total_claim_value;
-      }
-      return sum;
-    }, 0) /
-      Object.values(buildingServicesClaims).reduce(
-        (sum, folder) => (folder.folder_type === 'parent' ? sum + folder.total_claim_value : sum),
-        0
-      )
+    parentClaims.reduce(
+      (sum, folder) => sum + folder.success_probability * folder.total_claim_value,
+      0
+    ) / parentClaims.reduce((sum, folder) => sum + folder.total_claim_value, 0)
   ),
 };
 
@@ -505,5 +504,8 @@ buildingServicesClaims.TOTALS = {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = buildingServicesClaims;
 } else {
-  window.buildingServicesClaims = buildingServicesClaims;
+  (window as { buildingServicesClaims?: typeof buildingServicesClaims }).buildingServicesClaims =
+    buildingServicesClaims;
 }
+
+export default buildingServicesClaims;

@@ -1,22 +1,22 @@
 // Dashboard Module
-import { formatCurrency, formatPercentage } from '../utils/helpers.js';
+import { formatCurrency } from '../utils/helpers.js';
 
 export class Dashboard {
-    constructor(container, caseData) {
-        this.container = container;
-        this.caseData = caseData;
-        this.charts = {};
-        this.init();
-    }
-    
-    init() {
-        this.render();
-        this.initCharts();
-        this.bindEvents();
-    }
-    
-    render() {
-        this.container.innerHTML = `
+  constructor(container, caseData) {
+    this.container = container;
+    this.caseData = caseData;
+    this.charts = {};
+    this.init();
+  }
+
+  init() {
+    this.render();
+    this.initCharts();
+    this.bindEvents();
+  }
+
+  render() {
+    this.container.innerHTML = `
             <section id="dashboard" class="content-section active">
                 <div class="section-header">
                     <h1>Case Dashboard</h1>
@@ -27,10 +27,10 @@ export class Dashboard {
                 ${this.renderDashboardGrid()}
             </section>
         `;
-    }
-    
-    renderMetricsGrid() {
-        return `
+  }
+
+  renderMetricsGrid() {
+    return `
             <div class="metrics-grid">
                 <div class="metric-card critical">
                     <div class="metric-icon">
@@ -74,10 +74,10 @@ export class Dashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderDashboardGrid() {
-        return `
+  }
+
+  renderDashboardGrid() {
+    return `
             <div class="dashboard-grid">
                 <div class="dashboard-card large">
                     <div class="card-header">
@@ -118,10 +118,10 @@ export class Dashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderProgressTimeline() {
-        return `
+  }
+
+  renderProgressTimeline() {
+    return `
             <div class="progress-timeline">
                 <div class="timeline-step completed">
                     <div class="step-icon"><i class="fas fa-check"></i></div>
@@ -157,36 +157,38 @@ export class Dashboard {
                 </div>
             </div>
         `;
-    }
-    
-    renderActivityFeed() {
-        const activities = [
-            {
-                icon: 'fas fa-file-alt',
-                type: 'success',
-                title: 'K&T Block C Report',
-                action: 'uploaded',
-                time: '2 hours ago'
-            },
-            {
-                icon: 'fas fa-comment',
-                type: 'info',
-                title: 'Strategy review',
-                action: 'comment added',
-                time: '4 hours ago'
-            },
-            {
-                icon: 'fas fa-exclamation-circle',
-                type: 'warning',
-                title: 'Missing evidence',
-                action: 'flagged',
-                time: '1 day ago'
-            }
-        ];
-        
-        return `
+  }
+
+  renderActivityFeed() {
+    const activities = [
+      {
+        icon: 'fas fa-file-alt',
+        type: 'success',
+        title: 'K&T Block C Report',
+        action: 'uploaded',
+        time: '2 hours ago',
+      },
+      {
+        icon: 'fas fa-comment',
+        type: 'info',
+        title: 'Strategy review',
+        action: 'comment added',
+        time: '4 hours ago',
+      },
+      {
+        icon: 'fas fa-exclamation-circle',
+        type: 'warning',
+        title: 'Missing evidence',
+        action: 'flagged',
+        time: '1 day ago',
+      },
+    ];
+
+    return `
             <div class="activity-feed">
-                ${activities.map(activity => `
+                ${activities
+                  .map(
+                    activity => `
                     <div class="activity-item">
                         <div class="activity-icon ${activity.type}">
                             <i class="${activity.icon}"></i>
@@ -196,21 +198,25 @@ export class Dashboard {
                             <span class="activity-time">${activity.time}</span>
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </div>
         `;
-    }
-    
-    renderTeamStats() {
-        const teamMembers = [
-            { role: 'Senior Partner', task: 'Strategy oversight', progress: 95 },
-            { role: 'Case Manager', task: 'Evidence coordination', progress: 78 },
-            { role: 'Legal Analyst', task: 'Document analysis', progress: 85 }
-        ];
-        
-        return `
+  }
+
+  renderTeamStats() {
+    const teamMembers = [
+      { role: 'Senior Partner', task: 'Strategy oversight', progress: 95 },
+      { role: 'Case Manager', task: 'Evidence coordination', progress: 78 },
+      { role: 'Legal Analyst', task: 'Document analysis', progress: 85 },
+    ];
+
+    return `
             <div class="team-stats">
-                ${teamMembers.map(member => `
+                ${teamMembers
+                  .map(
+                    member => `
                     <div class="team-member">
                         <div class="member-avatar">
                             <i class="fas fa-user"></i>
@@ -223,68 +229,72 @@ export class Dashboard {
                             </div>
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
             </div>
         `;
+  }
+
+  initCharts() {
+    // Initialize evidence distribution chart
+    const ctx = this.container.querySelector('#evidence-chart');
+    if (ctx && window.Chart) {
+      this.charts.evidence = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Technical Reports', 'Correspondence', 'Legal Documents', 'Drawings'],
+          datasets: [
+            {
+              data: [35, 25, 25, 15],
+              backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+      });
     }
-    
-    initCharts() {
-        // Initialize evidence distribution chart
-        const ctx = this.container.querySelector('#evidence-chart');
-        if (ctx && window.Chart) {
-            this.charts.evidence = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Technical Reports', 'Correspondence', 'Legal Documents', 'Drawings'],
-                    datasets: [{
-                        data: [35, 25, 25, 15],
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-    }
-    
-    bindEvents() {
-        // Refresh button
-        this.container.querySelector('.refresh-btn')?.addEventListener('click', () => {
-            this.refresh();
-        });
-        
-        // Export button
-        this.container.querySelector('.export-btn')?.addEventListener('click', () => {
-            this.exportData();
-        });
-    }
-    
-    refresh() {
-        // Refresh dashboard data
-        console.log('Refreshing dashboard...');
-        // Add loading state and re-fetch data
-    }
-    
-    exportData() {
-        // Export dashboard data
-        console.log('Exporting dashboard data...');
-        // Implement export functionality
-    }
-    
-    updateMetrics(newData) {
-        // Update dashboard metrics with new data
-        Object.assign(this.caseData, newData);
-        this.render();
-        this.initCharts();
-        this.bindEvents();
-    }
+  }
+
+  bindEvents() {
+    // Refresh button
+    this.container.querySelector('.refresh-btn')?.addEventListener('click', () => {
+      this.refresh();
+    });
+
+    // Export button
+    this.container.querySelector('.export-btn')?.addEventListener('click', () => {
+      this.exportData();
+    });
+  }
+
+  refresh() {
+    // Refresh dashboard data
+    console.log('Refreshing dashboard...');
+    // Add loading state and re-fetch data
+  }
+
+  exportData() {
+    // Export dashboard data
+    console.log('Exporting dashboard data...');
+    // Implement export functionality
+  }
+
+  updateMetrics(newData) {
+    // Update dashboard metrics with new data
+    Object.assign(this.caseData, newData);
+    this.render();
+    this.initCharts();
+    this.bindEvents();
+  }
 }
 
 export default Dashboard;

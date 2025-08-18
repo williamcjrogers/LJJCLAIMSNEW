@@ -3,15 +3,22 @@
   "version": "2.0.0",
   "description": "LJJ SVP Claim Management System - Modular enterprise case management platform for Quantum Commercial Solutions",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "dev": "python -m http.server 3000",
-    "build": "echo 'ES6 modules - no build needed'",
-    "deploy": "vercel --prod",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "deploy": "npm run build && vercel --prod",
     "serve": "python -m http.server 8000",
     "start": "npm run serve",
     "vercel-dev": "vercel dev --listen 3000",
-    "lint": "echo 'Add ESLint configuration'",
-    "format": "echo 'Add Prettier configuration'"
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
+    "format": "prettier --write \"**/*.{ts,js,tsx,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,tsx,jsx,json,css,md}\"",
+    "clean": "rimraf dist"
   },
   "keywords": [
     "case-management",
@@ -30,11 +37,27 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "vercel": "^33.0.0"
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "vercel": "^32.0.1"
   },
   "browserslist": [
     "last 2 versions",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
+  }
 }

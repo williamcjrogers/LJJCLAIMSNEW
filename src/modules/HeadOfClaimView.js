@@ -3,44 +3,44 @@ import { formatCurrency, formatPercentage, formatDate } from '../utils/helpers.j
 import { ClaimsHierarchyUtils } from '../data/claimsHierarchy.js';
 
 export class HeadOfClaimView {
-    constructor(container, headId, options = {}) {
-        this.container = container;
-        this.headId = headId;
-        this.options = {
-            onBackToMaster: () => {},
-            onSubClaimClick: () => {},
-            ...options
-        };
-        
-        this.headData = ClaimsHierarchyUtils.getHeadOfClaim(headId);
-        this.timeline = ClaimsHierarchyUtils.getCombinedTimeline(headId);
-        this.activeTab = 'overview';
-        
-        if (!this.headData) {
-            throw new Error(`Head of claim '${headId}' not found`);
-        }
-        
-        this.init();
+  constructor(container, headId, options = {}) {
+    this.container = container;
+    this.headId = headId;
+    this.options = {
+      onBackToMaster: () => {},
+      onSubClaimClick: () => {},
+      ...options,
+    };
+
+    this.headData = ClaimsHierarchyUtils.getHeadOfClaim(headId);
+    this.timeline = ClaimsHierarchyUtils.getCombinedTimeline(headId);
+    this.activeTab = 'overview';
+
+    if (!this.headData) {
+      throw new Error(`Head of claim '${headId}' not found`);
     }
-    
-    init() {
-        this.render();
-        this.bindEvents();
-        this.initCharts();
-    }
-    
-    render() {
-        this.container.innerHTML = `
+
+    this.init();
+  }
+
+  init() {
+    this.render();
+    this.bindEvents();
+    this.initCharts();
+  }
+
+  render() {
+    this.container.innerHTML = `
             <section id="head-of-claim-${this.headId}" class="content-section active">
                 ${this.renderHeader()}
                 ${this.renderNavigationTabs()}
                 ${this.renderTabContent()}
             </section>
         `;
-    }
-    
-    renderHeader() {
-        return `
+  }
+
+  renderHeader() {
+    return `
             <div class="claim-header">
                 <div class="header-navigation">
                     <button class="back-btn" id="back-to-master">
@@ -80,10 +80,10 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderNavigationTabs() {
-        return `
+  }
+
+  renderNavigationTabs() {
+    return `
             <div class="claim-tabs">
                 <button class="tab-btn ${this.activeTab === 'overview' ? 'active' : ''}" data-tab="overview">
                     <i class="fas fa-chart-pie"></i> Overview
@@ -102,31 +102,33 @@ export class HeadOfClaimView {
                 </button>
             </div>
         `;
+  }
+
+  renderTabContent() {
+    switch (this.activeTab) {
+      case 'overview':
+        return this.renderOverviewTab();
+      case 'subclaims':
+        return this.renderSubClaimsTab();
+      case 'timeline':
+        return this.renderTimelineTab();
+      case 'evidence':
+        return this.renderEvidenceTab();
+      case 'analysis':
+        return this.renderAnalysisTab();
+      default:
+        return this.renderOverviewTab();
     }
-    
-    renderTabContent() {
-        switch(this.activeTab) {
-            case 'overview':
-                return this.renderOverviewTab();
-            case 'subclaims':
-                return this.renderSubClaimsTab();
-            case 'timeline':
-                return this.renderTimelineTab();
-            case 'evidence':
-                return this.renderEvidenceTab();
-            case 'analysis':
-                return this.renderAnalysisTab();
-            default:
-                return this.renderOverviewTab();
-        }
-    }
-    
-    renderOverviewTab() {
-        const subClaims = Object.entries(this.headData.sub_claims || {});
-        const totalSubClaimsValue = subClaims.reduce((sum, [key, subClaim]) => 
-            sum + (subClaim.claim_value || 0), 0);
-        
-        return `
+  }
+
+  renderOverviewTab() {
+    const subClaims = Object.entries(this.headData.sub_claims || {});
+    const totalSubClaimsValue = subClaims.reduce(
+      (sum, [, subClaim]) => sum + (subClaim.claim_value || 0),
+      0
+    );
+
+    return `
             <div class="tab-content active" id="overview-tab">
                 <div class="overview-grid">
                     <div class="overview-card primary">
@@ -135,13 +137,17 @@ export class HeadOfClaimView {
                             <canvas id="subclaim-value-chart"></canvas>
                         </div>
                         <div class="breakdown-legend">
-                            ${subClaims.map(([key, subClaim]) => `
+                            ${subClaims
+                              .map(
+                                ([key, subClaim]) => `
                                 <div class="legend-item">
                                     <span class="legend-color" style="background: ${this.getSubClaimColor(key)}"></span>
                                     <span class="legend-label">${subClaim.title}</span>
                                     <span class="legend-value">${formatCurrency(subClaim.claim_value)}</span>
                                 </div>
-                            `).join('')}
+                            `
+                              )
+                              .join('')}
                         </div>
                     </div>
                     
@@ -170,7 +176,10 @@ export class HeadOfClaimView {
                     <div class="overview-card">
                         <h3>Recent Activity</h3>
                         <div class="recent-timeline">
-                            ${this.timeline.slice(-3).map(event => `
+                            ${this.timeline
+                              .slice(-3)
+                              .map(
+                                event => `
                                 <div class="timeline-item compact">
                                     <div class="timeline-date">${formatDate(event.date)}</div>
                                     <div class="timeline-content">
@@ -178,7 +187,9 @@ export class HeadOfClaimView {
                                         <p>${event.description}</p>
                                     </div>
                                 </div>
-                            `).join('')}
+                            `
+                              )
+                              .join('')}
                         </div>
                     </div>
                     
@@ -209,12 +220,12 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderSubClaimsTab() {
-        const subClaims = Object.entries(this.headData.sub_claims || {});
-        
-        return `
+  }
+
+  renderSubClaimsTab() {
+    const subClaims = Object.entries(this.headData.sub_claims || {});
+
+    return `
             <div class="tab-content" id="subclaims-tab">
                 <div class="subclaims-header">
                     <h2>Sub-claims & Defects Breakdown</h2>
@@ -226,10 +237,10 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderSubClaimCard(key, subClaim) {
-        return `
+  }
+
+  renderSubClaimCard(key, subClaim) {
+    return `
             <div class="subclaim-card" data-subclaim-id="${key}">
                 <div class="subclaim-header">
                     <div class="subclaim-title">
@@ -251,24 +262,32 @@ export class HeadOfClaimView {
                     <div class="defects-section">
                         <h4>Key Defects</h4>
                         <div class="defects-list">
-                            ${(subClaim.defects || []).map(defect => `
+                            ${(subClaim.defects || [])
+                              .map(
+                                defect => `
                                 <div class="defect-item">
                                     <i class="fas fa-exclamation-triangle"></i>
                                     <span>${defect}</span>
                                 </div>
-                            `).join('')}
+                            `
+                              )
+                              .join('')}
                         </div>
                     </div>
                     
                     <div class="evidence-section">
                         <h4>Supporting Evidence</h4>
                         <div class="evidence-list">
-                            ${(subClaim.evidence_items || []).map(item => `
+                            ${(subClaim.evidence_items || [])
+                              .map(
+                                item => `
                                 <div class="evidence-item">
                                     <i class="fas fa-file-alt"></i>
                                     <span>${item}</span>
                                 </div>
-                            `).join('')}
+                            `
+                              )
+                              .join('')}
                         </div>
                     </div>
                 </div>
@@ -283,10 +302,10 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderTimelineTab() {
-        return `
+  }
+
+  renderTimelineTab() {
+    return `
             <div class="tab-content" id="timeline-tab">
                 <div class="timeline-header">
                     <h2>${this.headData.title} Timeline</h2>
@@ -305,34 +324,38 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderTimelineEvent(event) {
-        const isSharedEvent = event.affected_claims ? true : false;
-        
-        return `
+  }
+
+  renderTimelineEvent(event) {
+    const isSharedEvent = event.affected_claims ? true : false;
+
+    return `
             <div class="timeline-event ${event.category} ${isSharedEvent ? 'shared-event' : ''}">
                 <div class="event-date">${formatDate(event.date)}</div>
                 <div class="event-content">
                     <h4>${event.event}</h4>
                     <p>${event.description}</p>
-                    ${isSharedEvent ? `
+                    ${
+                      isSharedEvent
+                        ? `
                         <div class="shared-indicator">
                             <i class="fas fa-share-alt"></i>
                             <span>Affects multiple claims</span>
                         </div>
-                    ` : ''}
+                    `
+                        : ''
+                    }
                 </div>
                 <div class="event-impact ${event.impact}">
                     <i class="fas fa-circle"></i>
                 </div>
             </div>
         `;
-    }
-    
-    renderEvidenceTab() {
-        // This would show all evidence related to this head of claim
-        return `
+  }
+
+  renderEvidenceTab() {
+    // This would show all evidence related to this head of claim
+    return `
             <div class="tab-content" id="evidence-tab">
                 <div class="evidence-header">
                     <h2>Evidence Library - ${this.headData.title}</h2>
@@ -345,10 +368,10 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
-    }
-    
-    renderAnalysisTab() {
-        return `
+  }
+
+  renderAnalysisTab() {
+    return `
             <div class="tab-content" id="analysis-tab">
                 <div class="analysis-header">
                     <h2>Detailed Analysis - ${this.headData.title}</h2>
@@ -372,109 +395,110 @@ export class HeadOfClaimView {
                 </div>
             </div>
         `;
+  }
+
+  initCharts() {
+    if (!window.Chart) return;
+
+    if (this.activeTab === 'overview') {
+      this.initSubClaimValueChart();
     }
-    
-    initCharts() {
-        if (!window.Chart) return;
-        
-        if (this.activeTab === 'overview') {
-            this.initSubClaimValueChart();
-        }
+  }
+
+  initSubClaimValueChart() {
+    const ctx = this.container.querySelector('#subclaim-value-chart');
+    if (!ctx) return;
+
+    const subClaims = Object.entries(this.headData.sub_claims || {});
+    const labels = subClaims.map(([, subClaim]) => subClaim.title);
+    const values = subClaims.map(([, subClaim]) => subClaim.claim_value / 1000);
+
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: values,
+            backgroundColor: subClaims.map(([key]) => this.getSubClaimColor(key)),
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false, // We show custom legend
+          },
+        },
+      },
+    });
+  }
+
+  bindEvents() {
+    // Back to master button
+    this.container.querySelector('#back-to-master')?.addEventListener('click', () => {
+      this.options.onBackToMaster();
+    });
+
+    // Tab navigation
+    this.container.addEventListener('click', e => {
+      const tabBtn = e.target.closest('.tab-btn');
+      if (tabBtn) {
+        const newTab = tabBtn.dataset.tab;
+        this.switchTab(newTab);
+      }
+    });
+
+    // Sub-claim interactions
+    this.container.addEventListener('click', e => {
+      const viewSubClaimBtn = e.target.closest('.view-subclaim');
+      if (viewSubClaimBtn) {
+        const subClaimId = viewSubClaimBtn.dataset.subclaimId;
+        this.options.onSubClaimClick(this.headId, subClaimId);
+      }
+    });
+  }
+
+  switchTab(newTab) {
+    if (newTab === this.activeTab) return;
+
+    // Update tab buttons
+    this.container.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    this.container.querySelector(`[data-tab="${newTab}"]`)?.classList.add('active');
+
+    // Update active tab and re-render content
+    this.activeTab = newTab;
+
+    // Re-render tab content
+    const tabContentContainer = this.container.querySelector('.tab-content');
+    if (tabContentContainer) {
+      tabContentContainer.outerHTML = this.renderTabContent();
+      this.initCharts();
     }
-    
-    initSubClaimValueChart() {
-        const ctx = this.container.querySelector('#subclaim-value-chart');
-        if (!ctx) return;
-        
-        const subClaims = Object.entries(this.headData.sub_claims || {});
-        const labels = subClaims.map(([key, subClaim]) => subClaim.title);
-        const values = subClaims.map(([key, subClaim]) => subClaim.claim_value / 1000);
-        
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: subClaims.map(([key]) => this.getSubClaimColor(key))
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false // We show custom legend
-                    }
-                }
-            }
-        });
-    }
-    
-    bindEvents() {
-        // Back to master button
-        this.container.querySelector('#back-to-master')?.addEventListener('click', () => {
-            this.options.onBackToMaster();
-        });
-        
-        // Tab navigation
-        this.container.addEventListener('click', (e) => {
-            const tabBtn = e.target.closest('.tab-btn');
-            if (tabBtn) {
-                const newTab = tabBtn.dataset.tab;
-                this.switchTab(newTab);
-            }
-        });
-        
-        // Sub-claim interactions
-        this.container.addEventListener('click', (e) => {
-            const viewSubClaimBtn = e.target.closest('.view-subclaim');
-            if (viewSubClaimBtn) {
-                const subClaimId = viewSubClaimBtn.dataset.subclaimId;
-                this.options.onSubClaimClick(this.headId, subClaimId);
-            }
-        });
-    }
-    
-    switchTab(newTab) {
-        if (newTab === this.activeTab) return;
-        
-        // Update tab buttons
-        this.container.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        this.container.querySelector(`[data-tab="${newTab}"]`)?.classList.add('active');
-        
-        // Update active tab and re-render content
-        this.activeTab = newTab;
-        
-        // Re-render tab content
-        const tabContentContainer = this.container.querySelector('.tab-content');
-        if (tabContentContainer) {
-            tabContentContainer.outerHTML = this.renderTabContent();
-            this.initCharts();
-        }
-    }
-    
-    // Utility methods
-    getSubClaimColor(subClaimKey) {
-        const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
-        const index = Object.keys(this.headData.sub_claims || {}).indexOf(subClaimKey);
-        return colors[index % colors.length];
-    }
-    
-    getSuccessProbabilityClass() {
-        const prob = this.headData.success_probability;
-        if (prob >= 75) return 'success';
-        if (prob >= 50) return 'warning';
-        return 'error';
-    }
-    
-    countEvidenceItems() {
-        const subClaims = Object.values(this.headData.sub_claims || {});
-        return subClaims.reduce((total, subClaim) => 
-            total + (subClaim.evidence_items?.length || 0), 0);
-    }
+  }
+
+  // Utility methods
+  getSubClaimColor(subClaimKey) {
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+    const index = Object.keys(this.headData.sub_claims || {}).indexOf(subClaimKey);
+    return colors[index % colors.length];
+  }
+
+  getSuccessProbabilityClass() {
+    const prob = this.headData.success_probability;
+    if (prob >= 75) return 'success';
+    if (prob >= 50) return 'warning';
+    return 'error';
+  }
+
+  countEvidenceItems() {
+    const subClaims = Object.values(this.headData.sub_claims || {});
+    return subClaims.reduce((total, subClaim) => total + (subClaim.evidence_items?.length || 0), 0);
+  }
 }
 
 export default HeadOfClaimView;
