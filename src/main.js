@@ -341,19 +341,44 @@ class ClaimManagementApp {
     }
   }
 
-  navigateToSubClaim(headId, subClaimId) {
-    // TODO: Implement detailed sub-claim view
-    console.log(`Navigate to sub-claim: ${headId} -> ${subClaimId}`);
-
-    // Update view state
-    this.currentView = {
-      type: 'sub-claim',
-      headId: headId,
-      subClaimId: subClaimId,
-    };
-
-    // For now, just show an alert
-    alert(`Sub-claim view for ${subClaimId} in ${headId} - TODO: Implement detailed view`);
+  async navigateToSubClaim(headId, subClaimId) {
+    try {
+      // Dynamically import the SubClaimDetailView module
+      const { SubClaimDetailView } = await import('./modules/SubClaimDetailView.js');
+      
+      const container = this.getOrCreateSectionContainer('sub-claim-detail-view');
+      
+      // Create the sub-claim detail view
+      this.modules.subClaimDetailView = new SubClaimDetailView(headId, subClaimId, {
+        onBackToHead: () => this.navigateToHeadOfClaim(headId),
+        onBackToMaster: () => this.navigateToMaster(),
+      });
+      
+      // Update view state
+      this.currentView = {
+        type: 'sub-claim',
+        headId: headId,
+        subClaimId: subClaimId,
+      };
+      
+      // Hide other sections and show this one
+      this.hideCurrentSection();
+      container.classList.add('active');
+      
+      // Render the sub-claim view
+      this.modules.subClaimDetailView.render('sub-claim-detail-view');
+      
+      // Update navigation
+      const headData = this.data.hierarchy.heads_of_claim?.[headId];
+      const subClaimData = headData?.sub_claims?.[subClaimId];
+      this.updateBreadcrumb(subClaimData?.title || 'Sub-Claim Detail');
+      
+      // Update sidebar if needed
+      this.components.sidebar?.setActiveSection('claims');
+    } catch (error) {
+      console.error('Error navigating to sub-claim:', error);
+      this.showError(`Failed to load sub-claim: ${subClaimId}`);
+    }
   }
 
   // Public API methods
