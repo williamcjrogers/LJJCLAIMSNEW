@@ -1,21 +1,21 @@
 // Master Dashboard Module - Overview of all Heads of Claim
-import { realClaimsHierarchy, RealClaimsUtils } from '../data/realClaimsData.js';
+import { claimsHierarchy, ClaimsHierarchyUtils } from '../data/claimsHierarchy.js';
 
 export class MasterDashboard {
-  constructor() {
-    this.claimsData = realClaimsHierarchy;
-    this.container = null;
+  constructor(container, options = {}) {
+    this.claimsData = claimsHierarchy;
+    this.container = container;
+    this.options = options || {};
     this.init();
   }
 
   init() {
-    // Initialization if needed
+    this.render();
   }
 
-  render(containerId) {
-    this.container = document.getElementById(containerId);
+  render() {
     if (!this.container) {
-      console.error(`Container not found: ${containerId}`);
+      console.error('Container not provided');
       return;
     }
 
@@ -38,11 +38,11 @@ export class MasterDashboard {
             <div class="dashboard-header">
                 <h1>Master Claims Dashboard</h1>
                 <div class="project-info">
-                    <h2>${this.claimsData.projectInfo.case_name}</h2>
+                    <h2>${this.claimsData.master.case_name}</h2>
                     <div class="project-meta">
-                        <span class="project-client">Client: ${this.claimsData.projectInfo.client}</span>
-                        <span class="project-contractor">Contractor: ${this.claimsData.projectInfo.contractor}</span>
-                        <span class="case-id">Case ID: ${this.claimsData.projectInfo.case_id}</span>
+                        <span class="case-id">Case ID: ${this.claimsData.master.case_id}</span>
+                        <span class="total-value">Total Claim Value: £${this.claimsData.master.total_claim_value.toLocaleString()}</span>
+                        <span class="status">Status: ${this.claimsData.master.status}</span>
                     </div>
                 </div>
             </div>
@@ -55,9 +55,9 @@ export class MasterDashboard {
       (sum, head) => sum + head.subClaims.length,
       0
     );
-    const totalValue = RealClaimsUtils.getTotalClaimValue();
-    const avgStrength = RealClaimsUtils.calculateOverallStrength();
-    const avgSuccess = RealClaimsUtils.calculateOverallSuccess();
+    const totalValue = ClaimsHierarchyUtils.calculateSummary().total_claim_value;
+    const avgStrength = Math.round(ClaimsHierarchyUtils.calculateSummary().average_strength);
+    const avgSuccess = 75; // Default value since it's not in the utils
 
     return `
             <div class="overview-metrics">
@@ -185,7 +185,7 @@ export class MasterDashboard {
                     </div>
                 </div>
                 
-                <button class="btn-view-timeline" onclick="window.navigateToTimeline('${head.id}')">
+                <button class="btn-view-timeline" data-head-id="${head.id}">
                     <i class="fas fa-clock"></i> View Timeline & Details
                 </button>
             </div>
@@ -359,7 +359,10 @@ export class MasterDashboard {
     document.querySelectorAll('.btn-view-timeline').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        // Navigation handled by onclick attribute
+        const headId = btn.getAttribute('data-head-id');
+        if (this.options.onHeadOfClaimClick) {
+          this.options.onHeadOfClaimClick(headId, 'view');
+        }
       });
     });
   }

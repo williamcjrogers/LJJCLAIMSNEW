@@ -20,7 +20,9 @@
       "Bash(python:*)",
       "Bash(powershell:*)",
       "Bash(npm run lint:*)",
-      "Bash(start index.html)"
+      "Bash(start index.html)",
+      "Bash(start http://localhost:8080)",
+      "Bash(tsc --version)"
     ],
     "deny": [],
     "ask": []

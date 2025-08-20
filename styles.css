@@ -1450,7 +1450,10 @@ body {
 
 .strength-details {
   margin-top: 1rem;
-  space-y: 1rem;
+}
+
+.strength-details > * + * {
+  margin-top: 1rem;
 }
 
 .strength-factor {
