@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .status {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <div class="status">
+        <h1>Testing LJJ Claims Application</h1>
+        <div id="test-results"></div>
+    </div>
+
+    <script type="module">
+        const results = document.getElementById('test-results');
+        
+        async function testModules() {
+            const tests = [];
+            
+            // Test 1: Check if main modules exist
+            try {
+                const mainModule = await import('./src/main.js');
+                tests.push('<p class="success">✓ Main module loads</p>');
+            } catch (error) {
+                tests.push(`<p class="error">✗ Main module error: ${error.message}</p>`);
+            }
+            
+            // Test 2: Check data modules
+            try {
+                const { claimsHierarchy } = await import('./src/data/claimsHierarchy.js');
+                tests.push('<p class="success">✓ Claims data loads</p>');
+            } catch (error) {
+                tests.push(`<p class="error">✗ Claims data error: ${error.message}</p>`);
+            }
+            
+            // Test 3: Check if DOM elements exist
+            const mainApp = document.createElement('div');
+            mainApp.id = 'main-app';
+            mainApp.className = 'main-app';
+            document.body.appendChild(mainApp);
+            
+            if (document.getElementById('main-app')) {
+                tests.push('<p class="success">✓ DOM structure created</p>');
+            } else {
+                tests.push('<p class="error">✗ DOM structure missing</p>');
+            }
+            
+            results.innerHTML = tests.join('');
+            
+            // Try to initialize the app
+            results.innerHTML += '<h3>Attempting to initialize app...</h3>';
+            
+            try {
+                window.location.href = 'app-test.html';
+            } catch (error) {
+                results.innerHTML += `<p class="error">✗ App initialization error: ${error.message}</p>`;
+            }
+        }
+        
+        testModules();
+    </script>
+</body>
+</html>

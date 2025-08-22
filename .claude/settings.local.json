@@ -22,7 +22,9 @@
       "Bash(npm run lint:*)",
       "Bash(start index.html)",
       "Bash(start http://localhost:8080)",
-      "Bash(tsc --version)"
+      "Bash(tsc --version)",
+      "Bash(Start-Process \"http://localhost:8080\" -Wait:$false)",
+      "Bash(start test-page.html)"
     ],
     "deny": [],
     "ask": []

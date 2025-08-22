@@ -136,7 +136,23 @@ class ClaimManagementApp {
       // Load module if not already loaded
       if (!this.modules[section] && this.lazyModules[section]) {
         const moduleFile = await this.lazyModules[section]();
-        const ModuleClass = moduleFile.default || moduleFile[this.capitalizeFirst(section)];
+        // Get the correct module class name
+        const classNameMap = {
+          timeline: 'Timeline',
+          evidence: 'Evidence',
+          strategy: 'Strategy',
+          analytics: 'Analytics',
+          collaboration: 'Collaboration',
+          'ai-query': 'AIQuery',
+          'ai-insights': 'AIInsights',
+        };
+        const className = classNameMap[section];
+        const ModuleClass = moduleFile[className];
+
+        if (!ModuleClass) {
+          console.error(`Module class ${className} not found in ${section}`);
+          throw new Error(`Module class not found`);
+        }
 
         const container = this.getOrCreateSectionContainer(section);
         this.modules[section] = new ModuleClass(container, this.data);
