@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LJJ CLAIMS - Files Index</title>
+  <style>
+    :root { --bg:#0f172a; --panel:#111827; --text:#e5e7eb; --muted:#9ca3af; --link:#60a5fa; --accent:#22d3ee; }
+    html, body { margin:0; padding:0; height:100%; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif; }
+    header { padding:24px 16px; background:linear-gradient(180deg, rgba(34,211,238,0.08), rgba(96,165,250,0.06)); border-bottom:1px solid rgba(255,255,255,0.06); }
+    h1 { margin:0 0 6px; font-size:22px; }
+    .subtitle { color:var(--muted); font-size:13px; }
+    main { max-width:1100px; margin:0 auto; padding:20px 16px 60px; }
+    .panel { background:var(--panel); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:16px; }
+    .legend { color:var(--muted); font-size:12px; margin-top:8px; }
+    a { color:var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul.tree { list-style:none; padding-left:0; margin:0; }
+    .node { margin:6px 0; }
+    .folder > .label { cursor:pointer; display:flex; align-items:center; gap:8px; }
+    .chev { width: 10px; display:inline-block; transition: transform .15s ease; }
+    .folder.collapsed > ul { display:none; }
+    .folder.collapsed > .label .chev { transform: rotate(-90deg); }
+    .label .name { font-weight:600; }
+    .subtle { color:var(--muted); font-size:12px; margin-left: 6px; }
+    .tip { margin-top: 10px; font-size: 12px; color: var(--muted); }
+    .open { font-size:12px; margin-left:8px; }
+    .open a { color: var(--accent); }
+    .footer { margin-top: 18px; color: var(--muted); font-size: 12px; }
+    code { background: rgba(255,255,255,.06); padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LJJ CLAIMS – Files Index</h1>
+    <div class="subtitle">Linked overview of key folders and second-level subfolders. Click any item to navigate. Use your browser's back button to return.</div>
+  </header>
+  <main>
+    <div class="panel">
+      <div class="legend">Tip: Directory links open your local folder view in the browser for a basic preview. For files like images/PDFs, most browsers will render a quick preview directly.</div>
+      <ul class="tree" id="tree">
+        <!-- 1. SVP's -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">1. SVP's</span><span class="open"><a href="SVP%27s/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="SVP%27s/1.%20Design/" target="_blank" rel="noopener">1. Design</a></li>
+            <li class="node"><a href="SVP%27s/2.%20NCR%27s/" target="_blank" rel="noopener">2. NCR's</a></li>
+            <li class="node"><a href="SVP%27s/3.%20Notices/" target="_blank" rel="noopener">3. Notices</a></li>
+            <li class="node"><a href="SVP%27s/4.%20Correspondence/" target="_blank" rel="noopener">4. Correspondence</a></li>
+            <li class="node"><a href="SVP%27s/5.%20Commissioning%20Certs%20-%20Old%20LJJ,%20New%20K%26T/" target="_blank" rel="noopener">5. Commissioning Certs - Old LJJ, New K&amp;T</a></li>
+            <li class="node"><a href="SVP%27s/6.%20Reports/" target="_blank" rel="noopener">6. Reports</a></li>
+          </ul>
+        </li>
+
+        <!-- 2. Building Management System -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">2. Building Management System</span><span class="open"><a href="Building%20Management%20System/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="Building%20Management%20System/1.%20Design/" target="_blank" rel="noopener">1. Design</a></li>
+            <li class="node"><a href="Building%20Management%20System/2.%20NCR%27s/" target="_blank" rel="noopener">2. NCR's</a></li>
+            <li class="node"><a href="Building%20Management%20System/3.%20Notices/" target="_blank" rel="noopener">3. Notices</a></li>
+            <li class="node"><a href="Building%20Management%20System/4.%20Correspondence/" target="_blank" rel="noopener">4. Correspondence</a></li>
+            <li class="node"><a href="Building%20Management%20System/5.%20Commissioning%20Certs%20-%20Old%20LJJ,%20New%20K%26T/" target="_blank" rel="noopener">5. Commissioning Certs - Old LJJ, New K&amp;T</a></li>
+            <li class="node"><a href="Building%20Management%20System/6.%20%20Photo%20and%20Video%20Evidence/" target="_blank" rel="noopener">6. Photo and Video Evidence</a></li>
+          </ul>
+        </li>
+
+        <!-- 3. Mechanical Building Services -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">3. Mechanical Building Services</span><span class="open"><a href="Mechanical%20Building%20Services/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="Mechanical%20Building%20Services/Chlorination/" target="_blank" rel="noopener">Chlorination</a></li>
+            <li class="node"><a href="Mechanical%20Building%20Services/Duplex%209/" target="_blank" rel="noopener">Duplex 9</a></li>
+            <li class="node"><a href="Mechanical%20Building%20Services/MVHR/" target="_blank" rel="noopener">MVHR</a></li>
+            <li class="node"><a href="Mechanical%20Building%20Services/Mechanical/" target="_blank" rel="noopener">Mechanical</a></li>
+            <li class="node"><a href="Mechanical%20Building%20Services/UFH/" target="_blank" rel="noopener">UFH</a></li>
+          </ul>
+        </li>
+
+        <!-- 4. Electrical -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">4. Electrical</span><span class="open"><a href="Electrical/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="Electrical/Electrical/" target="_blank" rel="noopener">Electrical</a></li>
+            <li class="node"><a href="Electrical/Lightning%20Protection/" target="_blank" rel="noopener">Lightning Protection</a></li>
+            <li class="node"><a href="Electrical/Security%20Access%20Control/" target="_blank" rel="noopener">Security Access Control</a></li>
+            <li class="node"><a href="Electrical/TV%20and%20Satellite/" target="_blank" rel="noopener">TV and Satellite</a></li>
+            <li class="node"><a href="Electrical/Trace%20Heating/" target="_blank" rel="noopener">Trace Heating</a></li>
+          </ul>
+        </li>
+
+        <!-- 5. Life Safety Systems -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">5. Life Safety Systems</span><span class="open"><a href="Life%20Safety%20Systems/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="Life%20Safety%20Systems/Fire%20Alarm%20System/" target="_blank" rel="noopener">Fire Alarm System</a></li>
+            <li class="node"><a href="Life%20Safety%20Systems/Generator/" target="_blank" rel="noopener">Generator</a></li>
+            <li class="node"><a href="Life%20Safety%20Systems/Smoke%20Ventilation/" target="_blank" rel="noopener">Smoke Ventilation</a></li>
+          </ul>
+        </li>
+
+        <!-- 6. Design -->
+        <li class="node"><a class="name" href="Design/" target="_blank" rel="noopener">6. Design</a></li>
+
+        <!-- 7. OH&P -->
+        <li class="node"><a class="name" href="OH%26P/" target="_blank" rel="noopener">7. OH&amp;P</a></li>
+
+        <!-- 8. Snagging - Kilmurrays -->
+        <li class="node"><a class="name" href="Snagging%20-%20Kilmurrays/" target="_blank" rel="noopener">8. Snagging - Kilmurrays</a></li>
+
+        <!-- 9. M&E Monitoring -->
+        <li class="node folder" data-collapsed="false">
+          <div class="label"><span class="chev">▾</span><span class="name">9. M&amp;E Monitoring</span><span class="open"><a href="M%26E%20Monitoring/" target="_blank" rel="noopener">open</a></span></div>
+          <ul>
+            <li class="node"><a href="M%26E%20Monitoring/Quinn%20Ross/" target="_blank" rel="noopener">Quinn Ross</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="tip">Note: This index is static and mirrors the current folder list. If folders are added, you may need to update this page accordingly.</div>
+      <div class="footer">Local path: <code>C:\Users\William\LJJCLAIMSNEW\Files</code></div>
+    </div>
+  </main>
+
+  <script>
+    // Collapsible folders
+    const folders = document.querySelectorAll('.folder');
+    folders.forEach(f => {
+      const label = f.querySelector('.label');
+      if (!label) return;
+      // initial state
+      if (f.getAttribute('data-collapsed') === 'true') f.classList.add('collapsed');
+      label.addEventListener('click', (e) => {
+        // prevent toggle when clicking the explicit "open" anchor
+        const isOpenLink = e.target.closest && e.target.closest('.open');
+        if (isOpenLink) return;
+        f.classList.toggle('collapsed');
+      });
+    });
+  </script>
+</body>
+</html>

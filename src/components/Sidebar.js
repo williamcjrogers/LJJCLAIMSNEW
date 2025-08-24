@@ -25,7 +25,6 @@ export class Sidebar {
 
   render() {
     this.container.innerHTML = `
-            <aside class="sidebar">
                 <div class="sidebar-header">
                     <div class="company-brand">
                         <i class="fas fa-building"></i>
@@ -57,7 +56,6 @@ export class Sidebar {
                         </button>
                     </div>
                 </div>
-            </aside>
         `;
   }
 

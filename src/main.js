@@ -1,6 +1,5 @@
 // Main Application Entry Point
 import { Sidebar } from './components/Sidebar.js';
-import { Dashboard } from './modules/Dashboard.js';
 import { MasterDashboard } from './modules/MasterDashboard_clean.js';
 import { HeadOfClaimView } from './modules/HeadOfClaimView.js';
 // import { EnhancedEvidenceViewer } from './modules/EnhancedEvidenceViewer.js';
@@ -103,9 +102,6 @@ class ClaimManagementApp {
         onHeadOfClaimClick: (headId, action) => this.navigateToHeadOfClaim(headId, action),
       });
 
-      // Keep original dashboard for legacy compatibility
-      this.modules.dashboard = new Dashboard(mainContent, this.data.case);
-
       // Initialize other modules as needed
       this.initializeLazyModules();
     } else {
@@ -130,6 +126,12 @@ class ClaimManagementApp {
     if (section === this.currentSection) return;
 
     try {
+      // Map legacy 'dashboard' to the new master dashboard view
+      if (section === 'dashboard') {
+        this.navigateToMaster();
+        return;
+      }
+
       // Hide current section
       this.hideCurrentSection();
 
